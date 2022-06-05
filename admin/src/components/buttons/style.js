@@ -58,11 +58,11 @@ export const StyledSolidButton = styled.button`
     props.disabled || props.gradientTheme === 'none'
       ? 'none'
       : props.gradientTheme
-        ? Gradient(
-            eval(`props.theme.${props.gradientTheme}.alt`),
-            eval(`props.theme.${props.gradientTheme}.default`)
-          )
-        : Gradient(props.theme.brand.alt, props.theme.brand.default)};
+      ? Gradient(
+          eval(`props.theme.${props.gradientTheme}.alt`),
+          eval(`props.theme.${props.gradientTheme}.default`)
+        )
+      : Gradient(props.theme.brand.alt, props.theme.brand.default)};
   color: ${props => props.theme.text.reverse};
 
   &:hover {
@@ -106,10 +106,11 @@ export const StyledTextButton = styled(StyledSolidButton)`
 `;
 
 export const StyledOutlineButton = styled(StyledTextButton)`
-  box-shadow: inset 0 0 0 2px ${props =>
-    props.disabled
-      ? props.theme.inactive
-      : eval(`props.theme.${props.color ? props.color : 'brand.default'}`)};
+  box-shadow: inset 0 0 0 2px
+    ${props =>
+      props.disabled
+        ? props.theme.inactive
+        : eval(`props.theme.${props.color ? props.color : 'brand.default'}`)};
   color: ${props =>
     props.disabled
       ? props.theme.inactive
@@ -124,12 +125,13 @@ export const StyledOutlineButton = styled(StyledTextButton)`
         : eval(
             `props.theme.${props.hoverColor ? props.hoverColor : 'brand.alt'}`
           )};
-    box-shadow: inset 0 0 0 2px ${props =>
-      props.disabled
-        ? props.theme.inactive
-        : eval(
-            `props.theme.${props.hoverColor ? props.hoverColor : 'brand.alt'}`
-          )};
+    box-shadow: inset 0 0 0 2px
+      ${props =>
+        props.disabled
+          ? props.theme.inactive
+          : eval(
+              `props.theme.${props.hoverColor ? props.hoverColor : 'brand.alt'}`
+            )};
     transition: ${Transition.hover.on};
   }
 `;
@@ -144,8 +146,8 @@ export const StyledIconButton = styled.button`
     props.disabled
       ? props.theme.inactive
       : props.color
-        ? eval(`props.theme.${props.color}`)
-        : props.theme.text.alt};
+      ? eval(`props.theme.${props.color}`)
+      : props.theme.text.alt};
   opacity: ${props => (props.opacity ? props.opacity : 1)};
 
   &:hover {
@@ -153,10 +155,10 @@ export const StyledIconButton = styled.button`
       props.disabled
         ? props.theme.inactive
         : props.hoverColor
-          ? eval(`props.theme.${props.hoverColor}`)
-          : props.color
-            ? eval(`props.theme.${props.color}`)
-            : props.theme.brand.alt};
+        ? eval(`props.theme.${props.hoverColor}`)
+        : props.color
+        ? eval(`props.theme.${props.color}`)
+        : props.theme.brand.alt};
     transform: ${props => (props.disabled ? 'none' : 'scale(1.05)')};
     box-shadow: none;
     opacity: 1;

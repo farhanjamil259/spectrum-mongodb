@@ -35,8 +35,8 @@ const variables = {
 it('should be able to delete self-published thread', async () => {
   const query = /* GraphQL */ `
     mutation deleteThread($threadId: ID!) {
-      deleteThread (threadId: $threadId)
-    },
+      deleteThread(threadId: $threadId)
+    }
   `;
 
   const context = {
@@ -52,8 +52,8 @@ it('should be able to delete self-published thread', async () => {
 it('should be able to delete thread if user owns community', async () => {
   const query = /* GraphQL */ `
     mutation deleteThread($threadId: ID!) {
-      deleteThread (threadId: $threadId)
-    },
+      deleteThread(threadId: $threadId)
+    }
   `;
 
   const context = {
@@ -69,8 +69,8 @@ it('should be able to delete thread if user owns community', async () => {
 it("should not delete thread if user doesn't have permissions", async () => {
   const query = /* GraphQL */ `
     mutation deleteThread($threadId: ID!) {
-      deleteThread (threadId: $threadId)
-    },
+      deleteThread(threadId: $threadId)
+    }
   `;
 
   const context = {
@@ -86,8 +86,8 @@ it("should not delete thread if user doesn't have permissions", async () => {
 it('should not delete thread if user is not signed in', async () => {
   const query = /* GraphQL */ `
     mutation deleteThread($threadId: ID!) {
-      deleteThread (threadId: $threadId)
-    },
+      deleteThread(threadId: $threadId)
+    }
   `;
 
   const context = {

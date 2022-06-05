@@ -155,9 +155,25 @@ messages.map(message => {
 
 debug('Connecting to db...');
 // $FlowFixMe
-const db = require('rethinkhaberdashery')({
-  db: 'spectrum',
-});
+// const db = require('rethinkhaberdashery')({
+//   db: 'spectrum',
+// });
+
+const { MongoClient } = require('mongodb');
+
+const uri = 'mongodb://localhost:27017';
+
+const client = new MongoClient(uri);
+client
+  .connect()
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch(error => {
+    console.log(`Failed to connect to MongoDB, because: ${error.message}`);
+  });
+const database = client.db('spectrum');
+const db = database;
 
 debug(
   `Inserting ${users.length} users,
@@ -173,59 +189,76 @@ debug(
     usersDirectMessageThreads.length
   } usersDirectMessageThreads objects into the database... (this might take a while!)`
 );
+// Promise.all([
+//   db
+//     .table('communities')
+//     .insert(communities)
+//     .run(),
+//   db
+//     .table('channels')
+//     .insert(channels)
+//     .run(),
+//   db
+//     .table('threads')
+//     .insert(threads)
+//     .run(),
+//   db
+//     .table('messages')
+//     .insert(messages)
+//     .run(),
+//   db
+//     .table('users')
+//     .insert(users)
+//     .run(),
+//   db
+//     .table('usersSettings')
+//     .insert(usersSettings)
+//     .run(),
+//   db
+//     .table('reactions')
+//     .insert(reactions)
+//     .run(),
+//   db
+//     .table('directMessageThreads')
+//     .insert(directMessageThreads)
+//     .run(),
+//   db
+//     .table('messages')
+//     .insert(direct_messages)
+//     .run(),
+//   db
+//     .table('usersCommunities')
+//     .insert(usersCommunities)
+//     .run(),
+//   db
+//     .table('usersChannels')
+//     .insert(usersChannels)
+//     .run(),
+//   db
+//     .table('usersDirectMessageThreads')
+//     .insert(usersDirectMessageThreads)
+//     .run(),
+//   db
+//     .table('usersThreads')
+//     .insert(usersThreads)
+//     .run(),
+// ])
 Promise.all([
+  db.collection('communities').insertMany(communities),
+  db.collection('channels').insertMany(channels),
+  db.collection('threads').insertMany(threads),
+  db.collection('messages').insertMany(messages),
+  db.collection('users').insertMany(users),
+  db.collection('usersSettings').insertMany(usersSettings),
+  db.collection('reactions').insertMany(reactions),
+  db.collection('directMessageThreads').insertMany(directMessageThreads),
+  db.collection('messages').insertMany(direct_messages),
+  db.collection('usersCommunities').insertMany(usersCommunities),
+  db.collection('usersChannels').insertMany(usersChannels),
   db
-    .table('communities')
-    .insert(communities)
-    .run(),
-  db
-    .table('channels')
-    .insert(channels)
-    .run(),
-  db
-    .table('threads')
-    .insert(threads)
-    .run(),
-  db
-    .table('messages')
-    .insert(messages)
-    .run(),
-  db
-    .table('users')
-    .insert(users)
-    .run(),
-  db
-    .table('usersSettings')
-    .insert(usersSettings)
-    .run(),
-  db
-    .table('reactions')
-    .insert(reactions)
-    .run(),
-  db
-    .table('directMessageThreads')
-    .insert(directMessageThreads)
-    .run(),
-  db
-    .table('messages')
-    .insert(direct_messages)
-    .run(),
-  db
-    .table('usersCommunities')
-    .insert(usersCommunities)
-    .run(),
-  db
-    .table('usersChannels')
-    .insert(usersChannels)
-    .run(),
-  db
-    .table('usersDirectMessageThreads')
-    .insert(usersDirectMessageThreads)
-    .run(),
-  db
-    .table('usersThreads')
-    .insert(usersThreads)
-    .run(),
+    .collection('usersDirectMessageThreads')
+    .insertMany(usersDirectMessageThreads),
+  db.collection('usersThreads').insertMany(usersThreads),
 ])
   .then(() => {
     debug('Finished seeding database! 🎉');

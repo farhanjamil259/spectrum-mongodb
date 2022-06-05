@@ -141,8 +141,4 @@ class SetUsername extends React.Component<Props, State> {
   }
 }
 
-export default compose(
-  editUserMutation,
-  withApollo,
-  connect()
-)(SetUsername);
+export default compose(editUserMutation, withApollo, connect())(SetUsername);

@@ -11,9 +11,7 @@ const sendDeduplicatedPushNotification = notification => {
   sendNotificationAsPushQueue.add(
     { notification },
     {
-      jobId: `notification-${notification.id}-${notification.userId}-${
-        notification.modifiedAt
-      }`,
+      jobId: `notification-${notification.id}-${notification.userId}-${notification.modifiedAt}`,
     }
   );
 };

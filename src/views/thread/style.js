@@ -108,9 +108,7 @@ export const Detail = styled(Column)`
 
 export const DetailViewWrapper = styled(FlexCol)`
   background-image: ${({ theme }) =>
-    `linear-gradient(to right, ${theme.bg.wash}, ${theme.bg.default} 15%, ${
-      theme.bg.default
-    } 85%, ${theme.bg.wash})`};
+    `linear-gradient(to right, ${theme.bg.wash}, ${theme.bg.default} 15%, ${theme.bg.default} 85%, ${theme.bg.wash})`};
   flex: auto;
   justify-content: flex-start;
   align-items: center;

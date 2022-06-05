@@ -132,7 +132,4 @@ export class Login extends React.Component<Props, State> {
   }
 }
 
-export default compose(
-  getCommunityByMatch,
-  viewNetworkHandler
-)(Login);
+export default compose(getCommunityByMatch, viewNetworkHandler)(Login);

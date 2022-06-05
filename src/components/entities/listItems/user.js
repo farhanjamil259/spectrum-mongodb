@@ -121,7 +121,4 @@ const User = (props: Props) => {
   );
 };
 
-export const UserListItem = compose(
-  withRouter,
-  connect()
-)(User);
+export const UserListItem = compose(withRouter, connect())(User);

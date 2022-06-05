@@ -365,9 +365,7 @@ class Message extends React.Component<Props, State> {
                           ? `${CLIENT_URL}${getThreadLink(
                               thread
                             )}?m=${selectedMessageId}`
-                          : `${CLIENT_URL}/thread/${
-                              thread.id
-                            }?m=${selectedMessageId}`
+                          : `${CLIENT_URL}/thread/${thread.id}?m=${selectedMessageId}`
                       }
                       onSuccess={() =>
                         this.props.dispatch(

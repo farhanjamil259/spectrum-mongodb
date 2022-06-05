@@ -22,9 +22,7 @@ export default (
     `\nsending notification to private community owner: ${recipient.email}`
   );
 
-  const subject = `${user.name} has requested to join the ${
-    community.name
-  } community`;
+  const subject = `${user.name} has requested to join the ${community.name} community`;
   const preheader =
     'View your community settings to approve or block this request';
 

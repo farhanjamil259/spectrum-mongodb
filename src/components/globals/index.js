@@ -72,7 +72,7 @@ export const Transition = {
   },
 };
 
-export const zIndex = new function() {
+export const zIndex = new (function() {
   // Write down a camel-cased element descriptor as the name (e.g. modal or chatInput).
   // Define at a component level here, then use math to handle order at a local level.
   // (e.g. const ModalInput = styled.input`z-index: zIndex.modal + 1`;)
@@ -109,7 +109,7 @@ export const zIndex = new function() {
 
   this.toast = 6000; // toasts should be visible in every context
   this.tooltip = this.toast + 1; // tooltips should always be on top
-}();
+})();
 
 export const fontStack = css`
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica', 'Segoe',

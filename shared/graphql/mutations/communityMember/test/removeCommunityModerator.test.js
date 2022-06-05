@@ -36,7 +36,7 @@ afterAll(
 it('should fail if current user is not authenticated', async () => {
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }
@@ -51,7 +51,7 @@ it('should fail if current user is not authenticated', async () => {
 it('should fail if current user is not a member of the community', async () => {
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }
@@ -70,7 +70,7 @@ it('should fail if current user is not a member of the community', async () => {
 it('should fail if current user is not an owner of the community', async () => {
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }
@@ -89,7 +89,7 @@ it('should fail if current user is not an owner of the community', async () => {
 it('should fail if evaluated user is not a member of the community', async () => {
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }
@@ -114,7 +114,7 @@ it('should fail if evaluated user is not a member of the community', async () =>
 it("should fail if the community doesn't exist", async () => {
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }
@@ -136,7 +136,7 @@ it("should fail if the community doesn't exist", async () => {
 it('should fail if evaluated user not a moderator in the community', async () => {
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }
@@ -162,7 +162,7 @@ it('should remove a moderator in the community', async () => {
   // ensure user is removed as moderator from all channels
   const query = /* GraphQL */ `
     mutation removeCommunityModerator($input: RemoveCommunityModeratorInput!) {
-      removeCommunityModerator (input: $input) {
+      removeCommunityModerator(input: $input) {
         id
       }
     }

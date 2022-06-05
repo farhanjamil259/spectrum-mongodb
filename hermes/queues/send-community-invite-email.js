@@ -39,9 +39,7 @@ export default (job: SendCommunityInviteEmailJob): Promise<void> => {
     to,
   } = job.data;
 
-  const subject = `${job.data.sender.name} has invited you to join the ${
-    job.data.community.name
-  } community on Spectrum`;
+  const subject = `${job.data.sender.name} has invited you to join the ${job.data.community.name} community on Spectrum`;
 
   const preheader = `Come join the conversation with ${sender.name}!`;
   const joinPath = communitySettings

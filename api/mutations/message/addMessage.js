@@ -130,9 +130,7 @@ export default requireAuth(async (_: any, args: Input, ctx: GraphQLContext) => {
 
   if (message.messageType !== 'media' && message.file) {
     return new UserError(
-      `To send an image, please use messageType: "media" instead of "${
-        message.messageType
-      }".`
+      `To send an image, please use messageType: "media" instead of "${message.messageType}".`
     );
   }
 

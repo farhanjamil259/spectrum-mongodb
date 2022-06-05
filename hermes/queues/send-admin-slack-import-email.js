@@ -14,9 +14,7 @@ export default (job: Job<AdminSlackImportJobData>): Promise<void> => {
   debug(`\nnew job: ${job.id}`);
   const { user, community, invitedCount, teamName } = job.data;
   const subject = `New Slack import: ${invitedCount} invites from the ${teamName} Slack team`;
-  const preheader = `${invitedCount} invites sent for the ${
-    community.name
-  } community`;
+  const preheader = `${invitedCount} invites sent for the ${community.name} community`;
   try {
     return sendEmail({
       templateId: ADMIN_SLACK_IMPORT_PROCESSED_TEMPLATE,

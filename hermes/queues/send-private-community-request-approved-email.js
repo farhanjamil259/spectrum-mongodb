@@ -20,12 +20,8 @@ export default (
   const { recipient, community } = job.data;
   debug(`\nsending notification to user: ${recipient.email}`);
 
-  const subject = `Your request to join the ${
-    community.name
-  } community was approved!`;
-  const preheader = `You can now join the conversations happening in the ${
-    community.name
-  } community!`;
+  const subject = `Your request to join the ${community.name} community was approved!`;
+  const preheader = `You can now join the conversations happening in the ${community.name} community!`;
 
   try {
     return sendEmail({

@@ -49,10 +49,7 @@ import { MobileUserAction } from 'src/components/titlebar/actions';
 import { FeedsContainer } from './style';
 import { InfoContainer } from 'src/views/community/style';
 
-const ThreadFeedWithData = compose(
-  connect(),
-  getUserThreads
-)(ThreadFeed);
+const ThreadFeedWithData = compose(connect(), getUserThreads)(ThreadFeed);
 const ThreadParticipantFeedWithData = compose(
   connect(),
   getUserThreads

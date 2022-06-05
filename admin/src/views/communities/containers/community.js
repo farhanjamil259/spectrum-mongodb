@@ -8,7 +8,9 @@ import { View, CommunitySettingsContainer, SectionHeader } from '../style';
 
 class UserContainer extends Component {
   render() {
-    const { data: { error, community } } = this.props;
+    const {
+      data: { error, community },
+    } = this.props;
     if (error || !community) {
       return <div />;
     }
@@ -25,6 +27,8 @@ class UserContainer extends Component {
   }
 }
 
-export default compose(getCommunityBySlug, displayLoadingState, pure)(
-  UserContainer
-);
+export default compose(
+  getCommunityBySlug,
+  displayLoadingState,
+  pure
+)(UserContainer);

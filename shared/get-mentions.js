@@ -8,8 +8,8 @@ export const getMentions = (text: string): Array<string> => {
     : [];
   if (!mentions || mentions.length === 0) return [];
   // " @Mxstbr" => "@Mxstbr"
-  const trimmed = mentions.map(
-    mention => (typeof mention === 'string' ? mention.trim() : mention)
+  const trimmed = mentions.map(mention =>
+    typeof mention === 'string' ? mention.trim() : mention
   );
   // "@Mxstbr" => "Mxstbr"
   const cleaned = removeAtSymbol(trimmed);

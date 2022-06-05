@@ -75,7 +75,4 @@ class AppViewWrapper extends React.Component<Props> {
   }
 }
 
-export default compose(
-  withRouter,
-  withCurrentUser
-)(AppViewWrapper);
+export default compose(withRouter, withCurrentUser)(AppViewWrapper);

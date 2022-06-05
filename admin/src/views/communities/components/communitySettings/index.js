@@ -154,6 +154,8 @@ class CommunitySettings extends Component {
   }
 }
 
-export default compose(saveUserCommunityPermissionsMutation, connect(), pure)(
-  CommunitySettings
-);
+export default compose(
+  saveUserCommunityPermissionsMutation,
+  connect(),
+  pure
+)(CommunitySettings);

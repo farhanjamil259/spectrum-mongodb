@@ -157,12 +157,8 @@ export class UpsellSignIn extends React.Component<SigninProps, SigninState> {
     } else {
       const subtitle = view
         ? view.type === 'community'
-          ? `Spectrum is a place where communities can share, discuss, and grow together. Sign up to join the ${
-              view.data.name
-            } community and get in on the conversation.`
-          : `Spectrum is a place where communities can share, discuss, and grow together. Sign up to join the ${
-              view.data.community.name
-            } community and get in on the conversation.`
+          ? `Spectrum is a place where communities can share, discuss, and grow together. Sign up to join the ${view.data.name} community and get in on the conversation.`
+          : `Spectrum is a place where communities can share, discuss, and grow together. Sign up to join the ${view.data.community.name} community and get in on the conversation.`
         : 'Spectrum is a place where communities can share, discuss, and grow together. Sign up below to get in on the conversation.';
 
       return (

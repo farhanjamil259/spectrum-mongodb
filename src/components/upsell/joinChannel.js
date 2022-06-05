@@ -51,21 +51,15 @@ class JoinChannel extends React.Component<Props, State> {
 
         let str = '';
         if (isPending) {
-          str = `Requested to join ${toggleChannelSubscription.name} in ${
-            toggleChannelSubscription.name
-          }`;
+          str = `Requested to join ${toggleChannelSubscription.name} in ${toggleChannelSubscription.name}`;
         }
 
         if (!isPending && isMember) {
-          str = `Joined ${toggleChannelSubscription.name} in ${
-            toggleChannelSubscription.name
-          }!`;
+          str = `Joined ${toggleChannelSubscription.name} in ${toggleChannelSubscription.name}!`;
         }
 
         if (!isPending && !isMember) {
-          str = `Left the channel ${toggleChannelSubscription.name} in ${
-            toggleChannelSubscription.name
-          }.`;
+          str = `Left the channel ${toggleChannelSubscription.name} in ${toggleChannelSubscription.name}.`;
         }
 
         const type = isMember || isPending ? 'success' : 'neutral';

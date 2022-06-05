@@ -50,25 +50,37 @@ type CreateReadQueryInput<I, O> = $Exact<{
 
 type CreateQueryCallback<I, O> = (...args: I) => O;
 
+// export const createReadQuery = (callback: any) => {
+//   return async (...args: any) => {
+//     const input = callback(...args);
+//     TOTAL_QUERIES++;
+//     if (typeof input.query.run !== 'function') throw new Error(READ_RUN_ERROR);
+
+//     // const queryString = input.query.toString();
+//     // const cached = await queryCache.get(queryString);
+//     // if (cached) {
+//     //   CACHED_RESULTS++;
+//     //   return cached;
+//     // }
+
+//     const result = await input.query
+//       .run()
+//       .then(input.process ? input.process : res => res);
+
+//     // const tags = input.tags(result).filter(Boolean);
+//     // await queryCache.set(queryString, result, tags);
+//     return result;
+//   };
+// };
 export const createReadQuery = (callback: any) => {
   return async (...args: any) => {
     const input = callback(...args);
     TOTAL_QUERIES++;
-    if (typeof input.query.run !== 'function') throw new Error(READ_RUN_ERROR);
 
-    // const queryString = input.query.toString();
-    // const cached = await queryCache.get(queryString);
-    // if (cached) {
-    //   CACHED_RESULTS++;
-    //   return cached;
-    // }
+    const result = await input.query.then(
+      input.process ? input.process : res => res
+    );
 
-    const result = await input.query
-      .run()
-      .then(input.process ? input.process : res => res);
-
-    // const tags = input.tags(result).filter(Boolean);
-    // await queryCache.set(queryString, result, tags);
     return result;
   };
 };
@@ -78,14 +90,22 @@ type CreateWriteQueryInput<I, O> = $Exact<{
   invalidateTags: TagsFn<I, O>,
 }>;
 
+// export const createWriteQuery = <I: Array<*>, O: *>(callback: any) => {
+//   return async (...args: I) => {
+//     const input = callback(...args);
+//     const result = await input.query;
+//     if (typeof result.run === 'function') throw new Error(WRITE_RUN_ERROR);
+
+//     // const tags = input.invalidateTags(result).filter(Boolean);
+//     // await queryCache.invalidate(...tags);
+//     return result;
+//   };
+// };
 export const createWriteQuery = <I: Array<*>, O: *>(callback: any) => {
   return async (...args: I) => {
     const input = callback(...args);
     const result = await input.query;
-    if (typeof result.run === 'function') throw new Error(WRITE_RUN_ERROR);
 
-    // const tags = input.invalidateTags(result).filter(Boolean);
-    // await queryCache.invalidate(...tags);
     return result;
   };
 };

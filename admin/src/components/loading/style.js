@@ -27,12 +27,19 @@ export const Spinner = styled.span`
     left: ${props => (props.inline ? '0' : '50%')};
     width: ${props => (props.size !== undefined ? `${props.size}px` : '16px')};
     height: ${props => (props.size !== undefined ? `${props.size}px` : '16px')};
-    margin-top: ${props => (props.size !== undefined ? `-${props.size / 2}px` : '-8px')};
-    margin-left: ${props => (props.size !== undefined ? `-${props.size / 2}px` : '-8px')};
+    margin-top: ${props =>
+      props.size !== undefined ? `-${props.size / 2}px` : '-8px'};
+    margin-left: ${props =>
+      props.size !== undefined ? `-${props.size / 2}px` : '-8px'};
     border-radius: 50%;
-    border: ${props => '2px'} solid ${props => (props.color ? eval(`props.theme.${props.color}`) : props.theme.brand.alt)};
+    border: ${props => '2px'} solid
+      ${props =>
+        props.color
+          ? eval(`props.theme.${props.color}`)
+          : props.theme.brand.alt};
     border-top-color: transparent;
-    border-right-color: ${props => (props.color ? `props.theme.${props.color}` : props.theme.brand.alt)};
+    border-right-color: ${props =>
+      props.color ? `props.theme.${props.color}` : props.theme.brand.alt};
     border-bottom-color: transparent;
     animation: ${spin} 2s linear infinite;
   }

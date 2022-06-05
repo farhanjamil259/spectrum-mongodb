@@ -60,21 +60,15 @@ class ToggleChannelMembership extends React.Component<Props, State> {
           toggleChannelSubscription.channelPermissions.isPending;
         let str = '';
         if (isPending) {
-          str = `Requested to join ${toggleChannelSubscription.name} in ${
-            toggleChannelSubscription.community.name
-          }`;
+          str = `Requested to join ${toggleChannelSubscription.name} in ${toggleChannelSubscription.community.name}`;
         }
 
         if (!isPending && isMember) {
-          str = `Joined ${toggleChannelSubscription.name} in ${
-            toggleChannelSubscription.community.name
-          }!`;
+          str = `Joined ${toggleChannelSubscription.name} in ${toggleChannelSubscription.community.name}!`;
         }
 
         if (!isPending && !isMember) {
-          str = `Left the channel ${toggleChannelSubscription.name} in ${
-            toggleChannelSubscription.community.name
-          }.`;
+          str = `Left the channel ${toggleChannelSubscription.name} in ${toggleChannelSubscription.community.name}.`;
         }
 
         const type = isMember || isPending ? 'success' : 'neutral';

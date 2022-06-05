@@ -125,7 +125,4 @@ const Write = (props: Props) => {
   );
 };
 
-export default compose(
-  createDirectMessageThreadMutation,
-  connect()
-)(Write);
+export default compose(createDirectMessageThreadMutation, connect())(Write);

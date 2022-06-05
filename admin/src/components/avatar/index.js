@@ -40,16 +40,22 @@ const StyledAvatarContainer = styled.object`
     width: ${props =>
       props.onlineSize === 'large'
         ? '10px'
-        : props.onlineSize === 'small' ? '4px' : '6px'};
+        : props.onlineSize === 'small'
+        ? '4px'
+        : '6px'};
     height: ${props =>
       props.onlineSize === 'large'
         ? '10px'
-        : props.onlineSize === 'small' ? '4px' : '6px'};
+        : props.onlineSize === 'small'
+        ? '4px'
+        : '6px'};
     background: ${props => props.theme.special.default};
     border-radius: ${props =>
       props.onlineSize === 'large'
         ? '10px'
-        : props.onlineSize === 'small' ? '4px' : '6px'};
+        : props.onlineSize === 'small'
+        ? '4px'
+        : '6px'};
     border: 2px solid ${props => props.theme.text.reverse};
     bottom: 0;
     right: ${props => (props.onlineSize === 'large' ? '0' : '-4px')};

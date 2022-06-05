@@ -200,7 +200,4 @@ const Feeds = (props: Props) => {
   );
 };
 
-export const CommunityFeeds = compose(
-  withRouter,
-  withCurrentUser
-)(Feeds);
+export const CommunityFeeds = compose(withRouter, withCurrentUser)(Feeds);

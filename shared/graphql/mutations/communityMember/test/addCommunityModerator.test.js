@@ -36,7 +36,7 @@ afterAll(
 it('should fail if current user is not authenticated', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -51,7 +51,7 @@ it('should fail if current user is not authenticated', async () => {
 it('should fail if current user is not a member of the community', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -70,7 +70,7 @@ it('should fail if current user is not a member of the community', async () => {
 it('should fail if evaluated user is not a member of the community', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -95,7 +95,7 @@ it('should fail if evaluated user is not a member of the community', async () =>
 it('should fail if evaluated user used to be a member but is not any more', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -120,7 +120,7 @@ it('should fail if evaluated user used to be a member but is not any more', asyn
 it("should fail if the community doesn't exist", async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -142,7 +142,7 @@ it("should fail if the community doesn't exist", async () => {
 it('should fail if evaluated user is already a moderator in the community', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -167,7 +167,7 @@ it('should fail if evaluated user is already a moderator in the community', asyn
 it('should fail if current user is not an owner of the community', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }
@@ -186,7 +186,7 @@ it('should fail if current user is not an owner of the community', async () => {
 it('should create a moderator in the community', async () => {
   const query = /* GraphQL */ `
     mutation addCommunityModerator($input: AddCommunityModeratorInput!) {
-      addCommunityModerator (input: $input) {
+      addCommunityModerator(input: $input) {
         id
       }
     }

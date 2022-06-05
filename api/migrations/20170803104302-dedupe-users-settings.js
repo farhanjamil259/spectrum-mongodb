@@ -12,111 +12,118 @@ function _toConsumableArray(arr) {
   }
 }
 
+// exports.up = function(r, conn) {
+//   // Get every UserID that has opted out of new message in threads emails
+//   return (
+//     r
+//       .table('usersSettings')
+//       .filter({
+//         notifications: {
+//           types: {
+//             newMessageInThreads: {
+//               email: false,
+//             },
+//           },
+//         },
+//       })
+//       .map(rec => rec('userId'))
+//       .distinct()
+//       .run(conn)
+//       .then(cursor => cursor.toArray())
+//       .then(optedOut => {
+//         return Promise.all([
+//           optedOut,
+//           r
+//             .table('usersSettings')
+//             .filter({
+//               notifications: {
+//                 types: {
+//                   newMessageInThreads: {
+//                     email: true,
+//                   },
+//                 },
+//               },
+//             })
+//             .map(rec => rec('userId'))
+//             .distinct()
+//             .run(conn)
+//             .then(cursor => cursor.toArray()),
+//         ]);
+//       })
+//       .then(([optedOut, optedIn]) => {
+//         return [
+//           optedOut,
+//           // Remove userIds that appear in optedOut from optedIn
+//           without.apply(
+//             undefined,
+//             [optedIn].concat(_toConsumableArray(optedOut))
+//           ),
+//         ];
+//       })
+//       // Drop the usersSettings table
+//       .then(([optedOut, optedIn]) => {
+//         return Promise.all([
+//           optedOut,
+//           optedIn,
+//           r.table('usersSettings').delete().run(conn),
+//         ]);
+//       })
+//       .then(([optedOut, optedIn]) => {
+//         // Insert records of users that have opted out
+//         const optedOutInsertions = optedOut.map(userId =>
+//           r
+//             .table('usersSettings')
+//             .insert({
+//               userId,
+//               notifications: {
+//                 types: {
+//                   newMessageInThreads: {
+//                     email: false,
+//                   },
+//                   newThreadCreated: {
+//                     email: true,
+//                   },
+//                 },
+//               },
+//             })
+//             .run(conn)
+//         );
+//         // Insert records of users that have opted in
+//         const optedInInsertions = optedIn.map(userId =>
+//           r
+//             .table('usersSettings')
+//             .insert({
+//               userId,
+//               notifications: {
+//                 types: {
+//                   newMessageInThreads: {
+//                     email: true,
+//                   },
+//                   newThreadCreated: {
+//                     email: true,
+//                   },
+//                 },
+//               },
+//             })
+//             .run(conn)
+//         );
+//         return Promise.all(
+//           [].concat(
+//             _toConsumableArray(optedOutInsertions),
+//             _toConsumableArray(optedInInsertions)
+//           )
+//         );
+//       })
+//   );
+// };
 exports.up = function(r, conn) {
   // Get every UserID that has opted out of new message in threads emails
-  return (
-    r
-      .table('usersSettings')
-      .filter({
-        notifications: {
-          types: {
-            newMessageInThreads: {
-              email: false,
-            },
-          },
-        },
-      })
-      .map(rec => rec('userId'))
-      .distinct()
-      .run(conn)
-      .then(cursor => cursor.toArray())
-      .then(optedOut => {
-        return Promise.all([
-          optedOut,
-          r
-            .table('usersSettings')
-            .filter({
-              notifications: {
-                types: {
-                  newMessageInThreads: {
-                    email: true,
-                  },
-                },
-              },
-            })
-            .map(rec => rec('userId'))
-            .distinct()
-            .run(conn)
-            .then(cursor => cursor.toArray()),
-        ]);
-      })
-      .then(([optedOut, optedIn]) => {
-        return [
-          optedOut,
-          // Remove userIds that appear in optedOut from optedIn
-          without.apply(
-            undefined,
-            [optedIn].concat(_toConsumableArray(optedOut))
-          ),
-        ];
-      })
-      // Drop the usersSettings table
-      .then(([optedOut, optedIn]) => {
-        return Promise.all([
-          optedOut,
-          optedIn,
-          r.table('usersSettings').delete().run(conn),
-        ]);
-      })
-      .then(([optedOut, optedIn]) => {
-        // Insert records of users that have opted out
-        const optedOutInsertions = optedOut.map(userId =>
-          r
-            .table('usersSettings')
-            .insert({
-              userId,
-              notifications: {
-                types: {
-                  newMessageInThreads: {
-                    email: false,
-                  },
-                  newThreadCreated: {
-                    email: true,
-                  },
-                },
-              },
-            })
-            .run(conn)
-        );
-        // Insert records of users that have opted in
-        const optedInInsertions = optedIn.map(userId =>
-          r
-            .table('usersSettings')
-            .insert({
-              userId,
-              notifications: {
-                types: {
-                  newMessageInThreads: {
-                    email: true,
-                  },
-                  newThreadCreated: {
-                    email: true,
-                  },
-                },
-              },
-            })
-            .run(conn)
-        );
-        return Promise.all(
-          [].concat(
-            _toConsumableArray(optedOutInsertions),
-            _toConsumableArray(optedInInsertions)
-          )
-        );
-      })
-  );
+  return Promise.resolve();
 };
 
+// exports.down = function(r, conn) {
+//   return Promise.resolve();
+// };
 exports.down = function(r, conn) {
   return Promise.resolve();
 };

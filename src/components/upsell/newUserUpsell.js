@@ -207,7 +207,4 @@ class UpsellNewUser extends Component {
   }
 }
 
-export default compose(
-  withRouter,
-  connect()
-)(UpsellNewUser);
+export default compose(withRouter, connect())(UpsellNewUser);

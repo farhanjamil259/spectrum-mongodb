@@ -20,8 +20,7 @@ describe('Community settings members tab', () => {
 
   it('should have a list of the members', () => {
     cy.visit(`/${community.slug}/settings`);
-    cy
-      .get(`[href="/${community.slug}/settings/members"]`)
+    cy.get(`[href="/${community.slug}/settings/members"]`)
       .should('be.visible')
       .click();
     members.forEach(member => {

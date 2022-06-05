@@ -3,6 +3,7 @@ const { db } = require('shared/db');
 import axios from 'axios';
 const querystring = require('querystring');
 import { decryptString } from 'shared/encryption';
+const dbUtil = require('shared/dbUtil');
 
 const defaultSlackSettings = {
   connectedAt: null,
@@ -16,39 +17,99 @@ const defaultSlackSettings = {
   invitesCustomMessage: null,
 };
 
+// export const getCommunitySettings = (id: string) => {
+//   return db
+//     .table('communitySettings')
+//     .getAll(id, { index: 'communityId' })
+//     .run()
+//     .then(data => {
+//       if (!data || data.length === 0) return null;
+//       return data[0];
+//     });
+// };
 export const getCommunitySettings = (id: string) => {
-  return db
-    .table('communitySettings')
-    .getAll(id, { index: 'communityId' })
-    .run()
-    .then(data => {
-      if (!data || data.length === 0) return null;
-      return data[0];
-    });
+  return dbUtil.tryCallAsync(
+    'getCommunitySettings',
+    () => {
+      return db
+        .collection('communitySettings')
+        .find({ communityId: id })
+        .toArray()
+        .then(data => {
+          if (!data || data.length === 0) return null;
+          return data[0];
+        });
+    },
+    null
+  );
 };
 
+// export const resetCommunitySlackSettings = (id: string) => {
+//   return db
+//     .table('communitySettings')
+//     .getAll(id, { index: 'communityId' })
+//     .update({
+//       slackSettings: {
+//         ...defaultSlackSettings,
+//       },
+//     })
+//     .run();
+// };
 export const resetCommunitySlackSettings = (id: string) => {
-  return db
-    .table('communitySettings')
-    .getAll(id, { index: 'communityId' })
-    .update({
-      slackSettings: {
-        ...defaultSlackSettings,
-      },
-    })
-    .run();
+  return dbUtil.tryCallAsync(
+    'resetCommunitySlackSettings',
+    () => {
+      return dbUtil.updateMany(
+        db,
+        'communitySettings',
+        {
+          communityId: id,
+        },
+        {
+          $set: dbUtil.flattenSafe({
+            slackSettings: {
+              ...defaultSlackSettings,
+            },
+          }),
+        }
+      );
+    },
+    null
+  );
 };
 
+// export const updateSlackInvitesMemberCount = (id: string, count: number) => {
+//   return db
+//     .table('communitySettings')
+//     .getAll(id, { index: 'communityId' })
+//     .update({
+//       slackSettings: {
+//         invitesMemberCount: count,
+//       },
+//     })
+//     .run();
+// };
 export const updateSlackInvitesMemberCount = (id: string, count: number) => {
-  return db
-    .table('communitySettings')
-    .getAll(id, { index: 'communityId' })
-    .update({
-      slackSettings: {
-        invitesMemberCount: count,
-      },
-    })
-    .run();
+  return dbUtil.tryCallAsync(
+    'updateSlackInvitesMemberCount',
+    () => {
+      return dbUtil.updateMany(
+        db,
+        'communitySettings',
+        {
+          communityId: id,
+        },
+        {
+          $set: flatten({
+            slackSettings: {
+              invitesMemberCount: count,
+            },
+          }),
+        }
+      );
+    },
+    null
+  );
 };
 
 export const getSlackUserListData = (token: string, scope: string) => {

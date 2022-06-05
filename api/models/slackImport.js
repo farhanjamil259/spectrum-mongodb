@@ -3,6 +3,7 @@ require('now-env');
 import axios from 'axios';
 const querystring = require('querystring');
 const { db } = require('shared/db');
+const dbUtil = require('shared/dbUtil');
 
 let SLACK_SECRET = process.env.SLACK_SECRET;
 if (!SLACK_SECRET) {
@@ -54,42 +55,84 @@ type CreateSlackImportType = {
   senderId: string,
   communityId: string,
 };
-export const createSlackImportRecord = (input: CreateSlackImportType) => {
-  return db
-    .table('slackImports')
-    .getAll(input.communityId, { index: 'communityId' })
-    .filter({ userId: input.senderId })
-    .run()
-    .then(result => {
-      // if a record already exists, return out
-      if (result && result.length > 0) return;
+// export const createSlackImportRecord = (input: CreateSlackImportType) => {
+//   return db
+//     .table('slackImports')
+//     .getAll(input.communityId, { index: 'communityId' })
+//     .filter({ userId: input.senderId })
+//     .run()
+//     .then(result => {
+//       // if a record already exists, return out
+//       if (result && result.length > 0) return;
 
-      // if no result is found, we can create a new record
+//       // if no result is found, we can create a new record
+//       return db
+//         .table('slackImports')
+//         .insert(
+//           {
+//             ...input,
+//             members: null,
+//           },
+//           { returnChanges: true }
+//         )
+//         .run()
+//         .then(result => {
+//           // kick off a queue worker to get the member data from slack
+//           const data = result.changes[0].new_val;
+//           return data;
+//         });
+//     });
+// };
+export const createSlackImportRecord = (input: CreateSlackImportType) => {
+  return dbUtil.tryCall(
+    'createSlackImportRecord',
+    () => {
       return db
-        .table('slackImports')
-        .insert(
-          {
-            ...input,
-            members: null,
-          },
-          { returnChanges: true }
-        )
-        .run()
+        .collection('slackImports')
+        .find({ communityId: input.communityId, userId: input.senderId })
+        .toArray()
         .then(result => {
-          // kick off a queue worker to get the member data from slack
-          const data = result.changes[0].new_val;
-          return data;
+          // if a record already exists, return out
+          if (result && result.length > 0) return;
+
+          // if no result is found, we can create a new record
+          return dbUtil
+            .insert('slackImports', {
+              ...input,
+              members: null,
+            })
+            .then(results => {
+              const data = results[0];
+              return data;
+            });
         });
-    });
+    },
+    null
+  );
 };
 
+// export const getSlackImport = (communityId: string) => {
+//   return db
+//     .table('slackImports')
+//     .getAll(communityId, { index: 'communityId' })
+//     .run()
+//     .then(results => {
+//       if (!results || results.length === 0) return null;
+//       return results[0];
+//     });
+// };
 export const getSlackImport = (communityId: string) => {
-  return db
-    .table('slackImports')
-    .getAll(communityId, { index: 'communityId' })
-    .run()
-    .then(results => {
-      if (!results || results.length === 0) return null;
-      return results[0];
-    });
+  return dbUtil.tryCallAsync(
+    'getSlackImport',
+    () => {
+      return db
+        .collection('slackImports')
+        .find({ communityId: communityId })
+        .toArray(results => {
+          if (!results || results.length === 0) return null;
+          return results[0];
+        });
+    },
+    null
+  );
 };

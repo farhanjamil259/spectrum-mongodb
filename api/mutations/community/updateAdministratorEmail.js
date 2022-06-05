@@ -24,7 +24,7 @@ export default requireAuth(async (_: any, args: Input, ctx: GraphQLContext) => {
     return new UserError('Please enter a working email address');
   }
 
-  if (!await canAdministerCommunity(user.id, communityId, loaders)) {
+  if (!(await canAdministerCommunity(user.id, communityId, loaders))) {
     return new UserError('You don’t have permission to manage this community');
   }
 

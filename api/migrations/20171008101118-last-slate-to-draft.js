@@ -65,39 +65,42 @@ const plainToDraft = compose(
 
 const slateToDraft = compose(plainToDraft, toPlainText, toState, JSON.parse);
 
+// exports.up = function(r, conn) {
+//   return (
+//     r
+//       .table('threads')
+//       .filter({
+//         type: 'SLATE',
+//       })
+//       .run(conn)
+//       .then(cursor => cursor.toArray())
+//       // Transform slate state to draftjs state
+//       .then(threads =>
+//         threads.map(thread =>
+//           Object.assign({}, thread, {
+//             type: 'DRAFTJS',
+//             content: Object.assign({}, thread.content, {
+//               body: slateToDraft(thread.content.body),
+//             }),
+//           })
+//         )
+//       )
+//       // Store the transformed threads
+//       .then(threads =>
+//         Promise.all(
+//           threads.map(thread =>
+//             r
+//               .table('threads')
+//               .get(thread.id)
+//               .update(thread)
+//               .run(conn)
+//           )
+//         )
+//       )
+//   );
+// };
 exports.up = function(r, conn) {
-  return (
-    r
-      .table('threads')
-      .filter({
-        type: 'SLATE',
-      })
-      .run(conn)
-      .then(cursor => cursor.toArray())
-      // Transform slate state to draftjs state
-      .then(threads =>
-        threads.map(thread =>
-          Object.assign({}, thread, {
-            type: 'DRAFTJS',
-            content: Object.assign({}, thread.content, {
-              body: slateToDraft(thread.content.body),
-            }),
-          })
-        )
-      )
-      // Store the transformed threads
-      .then(threads =>
-        Promise.all(
-          threads.map(thread =>
-            r
-              .table('threads')
-              .get(thread.id)
-              .update(thread)
-              .run(conn)
-          )
-        )
-      )
-  );
+  return Promise.resolve();
 };
 
 exports.down = function(r, conn) {

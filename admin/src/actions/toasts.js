@@ -23,7 +23,10 @@ export const addToastWithTimeout = (
   const id = nextToastId++;
   dispatch(addToast(id, kind, message));
 
-  setTimeout(() => {
-    dispatch(removeToast(id));
-  }, kind === 'success' ? 2000 : 4000);
+  setTimeout(
+    () => {
+      dispatch(removeToast(id));
+    },
+    kind === 'success' ? 2000 : 4000
+  );
 };

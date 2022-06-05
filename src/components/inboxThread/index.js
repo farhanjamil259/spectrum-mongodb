@@ -132,8 +132,4 @@ class InboxThread extends React.Component<Props> {
   }
 }
 
-export default compose(
-  withRouter,
-  withCurrentUser,
-  connect()
-)(InboxThread);
+export default compose(withRouter, withCurrentUser, connect())(InboxThread);

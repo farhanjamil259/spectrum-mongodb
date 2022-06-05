@@ -19,9 +19,9 @@ export type AddCommunityMembersType = {
 };
 
 export type AddCommunityMembersProps = {
-  addCommunityMembers: ({ input: { communityIds: Array<string> } }) => Promise<
-    AddCommunityMembersType
-  >,
+  addCommunityMembers: ({
+    input: { communityIds: Array<string> },
+  }) => Promise<AddCommunityMembersType>,
 };
 
 export const addCommunityMembersMutation = gql`

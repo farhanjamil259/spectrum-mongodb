@@ -3,6 +3,7 @@ const { db } = require('shared/db');
 import { NEW_DOCUMENTS } from './utils';
 import { createChangefeed } from 'shared/changefeed-utils';
 import { getDirectMessageThreadRecords } from './usersDirectMessageThreads';
+const dbUtil = require('shared/dbUtil');
 
 export type DBDirectMessageThread = {
   createdAt: Date,
@@ -12,87 +13,183 @@ export type DBDirectMessageThread = {
 };
 
 // prettier-ignore
+// const getDirectMessageThread = (directMessageThreadId: string): Promise<DBDirectMessageThread> => {
+//   return db
+//     .table('directMessageThreads')
+//     .get(directMessageThreadId)
+//     .run()
+//     .then(res => res && !res.deletedAt ? res : null);
+// };
 const getDirectMessageThread = (directMessageThreadId: string): Promise<DBDirectMessageThread> => {
-  return db
-    .table('directMessageThreads')
-    .get(directMessageThreadId)
-    .run()
-    .then(res => res && !res.deletedAt ? res : null);
+  return dbUtil.tryCallAsync(
+    "getDirectMessageThread",
+    () => {
+      return db
+        .collection('directMessageThreads')
+        .findOne({ id: directMessageThreadId })
+        .then(res => res && !res.deletedAt ? res : null);
+    },
+    null
+  )
 };
 
 // prettier-ignore
+// const getDirectMessageThreads = (ids: Array<string>): Promise<Array<DBDirectMessageThread>> => {
+//   return db
+//     .table('directMessageThreads')
+//     .getAll(...ids)
+//     .filter(row => row.hasFields('deletedAt').not())
+//     .run();
+// };
 const getDirectMessageThreads = (ids: Array<string>): Promise<Array<DBDirectMessageThread>> => {
-  return db
-    .table('directMessageThreads')
-    .getAll(...ids)
-    .filter(row => row.hasFields('deletedAt').not())
-    .run();
+  return dbUtil.tryCallAsync(
+    "getDirectMessageThreads",
+    () => {
+      return db
+        .collection('directMessageThreads')
+        .find({ id: { $in: ids }, deletedAt: null })
+        .toArray();
+    },
+    []
+  )
 };
 
+// const getDirectMessageThreadsByUser = (
+//   userId: string,
+//   // $FlowFixMe
+//   { first, after }
+// ): Promise<Array<DBDirectMessageThread>> => {
+//   return db
+//     .table('usersDirectMessageThreads')
+//     .getAll(userId, { index: 'userId' })
+//     .filter(row => row.hasFields('deletedAt').not())
+//     .eqJoin('threadId', db.table('directMessageThreads'))
+//     .without({
+//       left: ['id', 'createdAt', 'threadId', 'userId', 'lastActive', 'lastSeen'],
+//     })
+//     .zip()
+//     .orderBy(db.desc('threadLastActive'))
+//     .skip(after || 0)
+//     .limit(first)
+//     .run();
+// };
 const getDirectMessageThreadsByUser = (
   userId: string,
-  // $FlowFixMe
+  //   // $FlowFixMe
   { first, after }
 ): Promise<Array<DBDirectMessageThread>> => {
-  return db
-    .table('usersDirectMessageThreads')
-    .getAll(userId, { index: 'userId' })
-    .filter(row => row.hasFields('deletedAt').not())
-    .eqJoin('threadId', db.table('directMessageThreads'))
-    .without({
-      left: ['id', 'createdAt', 'threadId', 'userId', 'lastActive', 'lastSeen'],
-    })
-    .zip()
-    .orderBy(db.desc('threadLastActive'))
-    .skip(after || 0)
-    .limit(first)
-    .run();
+  return dbUtil.tryCallAsync(
+    'getDirectMessageThreadsByUser',
+    async () => {
+      let ret = await db
+        .collection('usersDirectMessageThreads')
+        .find({ userId: userId, deletedAt: null })
+        .toArray();
+      ret = await dbUtil.eqJoin(db, ret, 'threadId', 'directMessageThreads');
+      ret = dbUtil.without(ret, {
+        left: [
+          'id',
+          'createdAt',
+          'threadId',
+          'userId',
+          'lastActive',
+          'lastSeen',
+        ],
+      });
+      ret = dbUtil.zip(ret);
+      // todo: orderby
+      ret = dbUtil.skip(ret, after || 0);
+      ret = dbUtil.limit(ret, first);
+      return ret;
+    },
+    []
+  );
 };
 
 // prettier-ignore
+// const createDirectMessageThread = (isGroup: boolean, userId: string): DBDirectMessageThread => {
+//   return db
+//     .table('directMessageThreads')
+//     .insert(
+//       {
+//         createdAt: new Date(),
+//         name: null,
+//         isGroup,
+//         threadLastActive: new Date(),
+//       },
+//       { returnChanges: true }
+//     )
+//     .run()
+//     .then(result => {
+//       return result.changes[0].new_val
+//     });
+// };
 const createDirectMessageThread = (isGroup: boolean, userId: string): DBDirectMessageThread => {
-  return db
-    .table('directMessageThreads')
+  return dbUtil
     .insert(
+      'directMessageThreads',
       {
-        createdAt: new Date(),
-        name: null,
-        isGroup,
-        threadLastActive: new Date(),
-      },
-      { returnChanges: true }
+        $set: dbUtil.flattenSafe({
+          createdAt: new Date(),
+          name: null,
+          isGroup,
+          threadLastActive: new Date(),
+        })
+      }
     )
-    .run()
-    .then(result => {
-      return result.changes[0].new_val
-    });
+    .then(results => {
+      return results[0]
+    })
 };
 
 // prettier-ignore
+// const setDirectMessageThreadLastActive = (id: string): DBDirectMessageThread => {
+//   return db
+//     .table('directMessageThreads')
+//     .get(id)
+//     .update({
+//       threadLastActive: db.now(),
+//     })
+//     .run();
+// };
 const setDirectMessageThreadLastActive = (id: string): DBDirectMessageThread => {
-  return db
-    .table('directMessageThreads')
-    .get(id)
-    .update({
-      threadLastActive: db.now(),
-    })
-    .run();
+  return db.tryCallAsync(
+    "setDirectMessageThreadLastActive",
+    () => {
+      return db
+        .updateOne(
+          'directMessageThreads', 
+          { 
+            id: id
+          }, 
+          {
+            $set: {
+              threadLastActive: new Date()
+            },
+          }
+        );
+    },
+    null
+  )
 };
 
-const hasChanged = (field: string) =>
-  db
-    .row('old_val')(field)
-    .ne(db.row('new_val')(field));
-const THREAD_LAST_ACTIVE_CHANGED = hasChanged('threadLastActive');
+// const hasChanged = (field: string) =>
+//   db
+//     .row('old_val')(field)
+//     .ne(db.row('new_val')(field));
+// const THREAD_LAST_ACTIVE_CHANGED = hasChanged('threadLastActive');
 
-const getUpdatedDirectMessageThreadChangefeed = () =>
-  db
-    .table('directMessageThreads')
-    .changes({
-      includeInitial: false,
-    })
-    .filter(NEW_DOCUMENTS.or(THREAD_LAST_ACTIVE_CHANGED))('new_val')
-    .run();
+// const getUpdatedDirectMessageThreadChangefeed = () =>
+//   db
+//     .table('directMessageThreads')
+//     .changes({
+//       includeInitial: false,
+//     })
+//     .filter(NEW_DOCUMENTS.or(THREAD_LAST_ACTIVE_CHANGED))('new_val')
+//     .run();
+const getUpdatedDirectMessageThreadChangefeed = () => {
+  console.log('getUpdatedDirectMessageThreadChangefeed called');
+};
 
 const listenToUpdatedDirectMessageThreadRecords = (cb: Function) => {
   return createChangefeed(
@@ -121,43 +218,90 @@ const listenToUpdatedDirectMessageThreads = (cb: Function): Function => {
 };
 
 // prettier-ignore
-const checkForExistingDMThread = async (participants: Array<string>): Promise<?string> => {
-  // return a list of all threadIds where both participants are active
-  let idsToCheck = await db
-    .table('usersDirectMessageThreads')
-    .getAll(...participants, { index: 'userId' })
-    .group('threadId')
-    .map(row => row('userId'))
-    .ungroup()
-    .filter(row =>
-      row('reduction')
-        .count()
-        .eq(participants.length)
+// const checkForExistingDMThread = async (participants: Array<string>): Promise<?string> => {
+//   // return a list of all threadIds where both participants are active
+//   let idsToCheck = await db
+//     .table('usersDirectMessageThreads')
+//     .getAll(...participants, { index: 'userId' })
+//     .group('threadId')
+//     .map(row => row('userId'))
+//     .ungroup()
+//     .filter(row =>
+//       row('reduction')
+//         .count()
+//         .eq(participants.length)
+//     )
+//     .pluck('group')
+//     .run();
+
+//   if (!idsToCheck || idsToCheck.length === 0) return null;
+
+//   // return only the thread Ids
+//   idsToCheck = idsToCheck.map(row => row.group);
+
+//   // given a list of threads where both users are active (includes all groups)
+//   // return only threads where these exact participants are used
+//   return await db
+//     .table('usersDirectMessageThreads')
+//     .getAll(...idsToCheck, { index: 'threadId' })
+//     .group('threadId')
+//     .ungroup()
+//     .filter(row =>
+//       row('reduction')
+//         .count()
+//         .eq(participants.length)
+//     )
+//     .pluck('group')
+//     .map(row => row('group'))
+//     .run()
+//     .then(results => (results && results.length > 0 ? results[0] : null));
+// };
+const checkForExistingDMThread = (participants: Array<string>): Promise<?string> => {
+  return dbUtil
+    .tryCallAsync(
+      "checkForExistingDMThread",
+      async () => {
+        let idsToCheck = await db
+          .collection('usersDirectMessageThreads')
+          .find({ 
+            userId: { 
+              $in: participants 
+            } 
+          })
+          .toArray();
+        idsToCheck = dbUtil.group(idsToCheck, 'threadId')
+        idsToCheck = dbUtil.groupMap(idsToCheck, (row) => {
+          return row.userId
+        })
+        idsToCheck = idsToCheck.filter(row => {
+          return row.reduction.length == participants.length
+        })
+        idsToCheck = dbUtil.pluck(idsToCheck, "group")
+        
+        if (!idsToCheck || idsToCheck.length === 0) return null;
+
+        // return only the thread Ids
+        idsToCheck = idsToCheck.map(row => row.group);
+
+        // given a list of threads where both users are active (includes all groups)
+        // return only threads where these exact participants are used
+        let ret = await db
+          .collection('usersDirectMessageThreads')
+          .find({ threadId: { $in: idsToCheck } })
+          .toArray();
+        ret = dbUtil.group(ret, "threadId");
+        ret = ret.filter(row => {
+          return row.reduction.length == participants.length
+        })
+        ret = dbUtil.pluck(ret, "group")
+        ret = ret.map(row => {
+          return row.group
+        })
+        ret = ret && ret.length > 0 ? ret[0] : null;
+        return ret;
+      },
+      null
     )
-    .pluck('group')
-    .run();
-
-  if (!idsToCheck || idsToCheck.length === 0) return null;
-
-  // return only the thread Ids
-  idsToCheck = idsToCheck.map(row => row.group);
-
-  // given a list of threads where both users are active (includes all groups)
-  // return only threads where these exact participants are used
-  return await db
-    .table('usersDirectMessageThreads')
-    .getAll(...idsToCheck, { index: 'threadId' })
-    .group('threadId')
-    .ungroup()
-    .filter(row =>
-      row('reduction')
-        .count()
-        .eq(participants.length)
-    )
-    .pluck('group')
-    .map(row => row('group'))
-    .run()
-    .then(results => (results && results.length > 0 ? results[0] : null));
 };
 
 module.exports = {

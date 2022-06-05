@@ -83,29 +83,29 @@ export const IconLink = styled(Link)`
   }
 
   ${/* handles unseen notification counts for both DMs and Notifications */ ''} ${props =>
-      props.withCount &&
-      css`
-        > .icon:after {
-          content: ${props.withCount ? `'${props.withCount}'` : `''`};
-          position: absolute;
-          left: calc(100% - 12px);
-          top: -2px;
-          font-size: 14px;
-          font-weight: 600;
-          background: ${({ theme }) => theme.bg.default};
-          color: ${({ theme }) =>
+    props.withCount &&
+    css`
+      > .icon:after {
+        content: ${props.withCount ? `'${props.withCount}'` : `''`};
+        position: absolute;
+        left: calc(100% - 12px);
+        top: -2px;
+        font-size: 14px;
+        font-weight: 600;
+        background: ${({ theme }) => theme.bg.default};
+        color: ${({ theme }) =>
+          process.env.NODE_ENV === 'production'
+            ? theme.text.default
+            : theme.warn.alt};
+        border-radius: 8px;
+        padding: 2px 4px;
+        border: 2px solid
+          ${({ theme }) =>
             process.env.NODE_ENV === 'production'
               ? theme.text.default
               : theme.warn.alt};
-          border-radius: 8px;
-          padding: 2px 4px;
-          border: 2px solid
-            ${({ theme }) =>
-              process.env.NODE_ENV === 'production'
-                ? theme.text.default
-                : theme.warn.alt};
-        }
-      `} &[data-active~='true'] {
+      }
+    `} &[data-active~='true'] {
     box-shadow: inset 0 -4px 0 ${({ theme }) => theme.bg.default};
     opacity: 1;
   }

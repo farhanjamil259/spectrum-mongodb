@@ -15,25 +15,25 @@ describe('reverse pagination', () => {
   it('should fetch with reverse pagination', async () => {
     // Get the first three messages
     const query = /* GraphQL */ `
-        {
-          thread(id: "thread-1") {
-            messageConnection(first: 3) {
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-              }
-              edges {
-                cursor
-                node {
-                  content {
-                    body
-                  }
+      {
+        thread(id: "thread-1") {
+          messageConnection(first: 3) {
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+            }
+            edges {
+              cursor
+              node {
+                content {
+                  body
                 }
               }
             }
           }
         }
-      `;
+      }
+    `;
 
     expect.hasAssertions();
     const result = await request(query);

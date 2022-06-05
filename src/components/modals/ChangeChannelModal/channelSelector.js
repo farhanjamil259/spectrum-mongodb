@@ -76,6 +76,7 @@ class ChannelSelector extends React.Component<Props> {
   }
 }
 
-export default compose(getCommunityChannels, viewNetworkHandler)(
-  ChannelSelector
-);
+export default compose(
+  getCommunityChannels,
+  viewNetworkHandler
+)(ChannelSelector);
