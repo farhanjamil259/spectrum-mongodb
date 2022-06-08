@@ -45,13 +45,13 @@ const Toast = styled.div`
   line-height: 1.4;
   display: block;
   margin-bottom: 8px;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1);
   opacity: 0;
   position: relative;
   animation-duration: 3s;
-  animation-fill-mode: forwards;
-  animation-name: ${toastFade};
-  animation-timing-function: linear;
+	animation-fill-mode: forwards;
+	animation-name: ${toastFade};
+	animation-timing-function: linear;
 `;
 
 export const ErrorToast = styled(Toast)`

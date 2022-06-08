@@ -80,51 +80,93 @@ export const getUserById = createReadQuery((userId: string) => {
 
     if (user.id) {
       return {
-        query: db.collection('users').findOne({ id: user.id }),
+        query: dbUtil.tryCallAsync(
+          '[Shared] getUserById',
+          { userId },
+          () => {
+            return db.collection('users').findOne({ id: user.id });
+          },
+          null
+        ),
         tags: (user: ?DBUser) => (user ? [user.id] : []),
       };
     } else if (user.email) {
       return {
-        query: db
-          .collection('users')
-          .find({ email: user.email })
-          .toArray(),
+        query: dbUtil.tryCallAsync(
+          '[Shared] getUserById',
+          { userId },
+          () => {
+            return db
+              .collection('users')
+              .find({ email: user.email })
+              .toArray();
+          },
+          []
+        ),
         process: (users: ?Array<DBUser>) => (users && users[0]) || null,
         tags: (user: ?DBUser) => (user ? [user.id] : []),
       };
     } else if (user.username) {
       return {
-        query: db
-          .collection('users')
-          .find({ username: user.username })
-          .toArray(),
+        query: dbUtil.tryCallAsync(
+          '[Shared] getUserById',
+          { userId },
+          () => {
+            return db
+              .collection('users')
+              .find({ username: user.username })
+              .toArray();
+          },
+          []
+        ),
         process: (users: ?Array<DBUser>) => (users && users[0]) || null,
         tags: (user: ?DBUser) => (user ? [user.id] : []),
       };
     } else if (user.githubProviderId) {
       return {
-        query: db
-          .collection('users')
-          .find({ githubProviderId: user.githubProviderId })
-          .toArray(),
+        query: dbUtil.tryCallAsync(
+          '[Shared] getUserById',
+          { userId },
+          () => {
+            return db
+              .collection('users')
+              .find({ githubProviderId: user.githubProviderId })
+              .toArray();
+          },
+          []
+        ),
         process: (users: ?Array<DBUser>) => (users && users[0]) || null,
         tags: (user: ?DBUser) => (user ? [user.id] : []),
       };
     } else if (user.googleProviderId) {
       return {
-        query: db
-          .collection('users')
-          .find({ googleProviderId: user.googleProviderId })
-          .toArray(),
+        query: dbUtil.tryCallAsync(
+          '[Shared] getUserById',
+          { userId },
+          () => {
+            return db
+              .collection('users')
+              .find({ googleProviderId: user.googleProviderId })
+              .toArray();
+          },
+          []
+        ),
         process: (users: ?Array<DBUser>) => (users && users[0]) || null,
         tags: (user: ?DBUser) => (user ? [user.id] : []),
       };
     } else if (user.providerId) {
       return {
-        query: db
-          .collection('users')
-          .find({ providerId: user.providerId })
-          .toArray(),
+        query: dbUtil.tryCallAsync(
+          '[Shared] getUserById',
+          { userId },
+          () => {
+            return db
+              .collection('users')
+              .find({ providerId: user.providerId })
+              .toArray();
+          },
+          []
+        ),
         process: (users: ?Array<DBUser>) => (users && users[0]) || null,
         tags: (user: ?DBUser) => (user ? [user.id] : []),
       };
@@ -138,7 +180,14 @@ export const getUserById = createReadQuery((userId: string) => {
 
   // userId was not a stringified object
   return {
-    query: db.collection('users').findOne({ id: userId }),
+    query: dbUtil.tryCallAsync(
+      '[Shared] getUserById',
+      { userId },
+      () => {
+        return db.collection('users').findOne({ id: userId });
+      },
+      null
+    ),
     tags: () => [userId],
   };
 });
@@ -149,10 +198,17 @@ export const getUserById = createReadQuery((userId: string) => {
 //   tags: (user: ?DBUser) => (user ? [user.id] : []),
 // }));
 export const getUserByEmail = createReadQuery((email: string) => ({
-  query: db
-    .collection('users')
-    .find({ email: email })
-    .toArray(),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getUserById',
+    { email },
+    () => {
+      return db
+        .collection('users')
+        .find({ email: email })
+        .toArray();
+    },
+    []
+  ),
   process: (users: ?Array<DBUser>) => (users && users[0]) || null,
   tags: (user: ?DBUser) => (user ? [user.id] : []),
 }));
@@ -163,10 +219,17 @@ export const getUserByEmail = createReadQuery((email: string) => ({
 //   tags: (users: Array<?DBUser>) => (users ? users.map(u => u && u.id) : []),
 // }));
 export const getUsersByEmail = createReadQuery((email: string) => ({
-  query: db
-    .collection('users')
-    .find({ email: email })
-    .toArray(),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getUserByEmail',
+    { email },
+    () => {
+      return db
+        .collection('users')
+        .find({ email: email })
+        .toArray();
+    },
+    []
+  ),
   process: (users: Array<?DBUser>) => users,
   tags: (users: Array<?DBUser>) => (users ? users.map(u => u && u.id) : []),
 }));
@@ -177,10 +240,17 @@ export const getUsersByEmail = createReadQuery((email: string) => ({
 //   tags: (user: ?DBUser) => (user ? [user.id] : []),
 // }));
 export const getUserByUsername = createReadQuery((username: string) => ({
-  query: db
-    .collection('users')
-    .find({ username: username })
-    .toArray(),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getUserByUsername',
+    { username },
+    () => {
+      return db
+        .collection('users')
+        .find({ username: username })
+        .toArray();
+    },
+    []
+  ),
   process: (users: ?Array<DBUser>) => (users && users[0]) || null,
   tags: (user: ?DBUser) => (user ? [user.id] : []),
 }));
@@ -193,10 +263,17 @@ export const getUserByUsername = createReadQuery((username: string) => ({
 // );
 export const getUsersByUsername = createReadQuery(
   (usernames: Array<string>) => ({
-    query: db
-      .collection('users')
-      .find({ username: { $in: usernames } })
-      .toArray(),
+    query: dbUtil.tryCallAsync(
+      '[Shared] getUserByUsername',
+      { usernames },
+      () => {
+        return db
+          .collection('users')
+          .find({ username: { $in: usernames } })
+          .toArray();
+      },
+      []
+    ),
     tags: (users: ?Array<DBUser>) => (users ? users.map(({ id }) => id) : []),
   })
 );
@@ -206,10 +283,17 @@ export const getUsersByUsername = createReadQuery(
 //   tags: (users: ?Array<DBUser>) => (users ? users.map(({ id }) => id) : []),
 // }));
 export const getUsers = createReadQuery((userIds: Array<string>) => ({
-  query: db
-    .collection('users')
-    .find({ id: { $in: userIds } })
-    .toArray(),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getUsers',
+    { userIds },
+    () => {
+      return db
+        .collection('users')
+        .find({ id: { $in: userIds } })
+        .toArray();
+    },
+    []
+  ),
   tags: (users: ?Array<DBUser>) => (users ? users.map(({ id }) => id) : []),
 }));
 
@@ -246,30 +330,37 @@ export const getUsers = createReadQuery((userIds: Array<string>) => ({
 //   invalidateTags: (user: DBUser) => [user.id],
 // }));
 export const storeUser = createWriteQuery((user: Object) => ({
-  query: dbUtil
-    .insert(db, 'users', {
-      ...user,
-      modifiedAt: null,
-      createdAt: new Date(),
-      termsLastAcceptedAt: new Date(),
-      lastSeen: new Date(),
-    })
-    .then(res => {
-      const dbUser = res[0];
-      sendNewUserWelcomeEmailQueue.add({ user: dbUser });
+  query: dbUtil.tryCallAsync(
+    '[Shared] storeUser',
+    { user },
+    () => {
+      return dbUtil
+        .insert(db, 'users', {
+          ...user,
+          modifiedAt: null,
+          createdAt: new Date(),
+          termsLastAcceptedAt: new Date(),
+          lastSeen: new Date(),
+        })
+        .then(res => {
+          const dbUser = res[0];
+          sendNewUserWelcomeEmailQueue.add({ user: dbUser });
 
-      if (dbUser.username) {
-        searchQueue.add({
-          id: dbUser.id,
-          type: 'user',
-          event: 'created',
+          if (dbUser.username) {
+            searchQueue.add({
+              id: dbUser.id,
+              type: 'user',
+              event: 'created',
+            });
+          }
+
+          return Promise.all([dbUser, createNewUsersSettings(dbUser.id)]).then(
+            ([dbUser]) => dbUser
+          );
         });
-      }
-
-      return Promise.all([dbUser, createNewUsersSettings(dbUser.id)]).then(
-        ([dbUser]) => dbUser
-      );
-    }),
+    },
+    null
+  ),
   invalidateTags: (user: DBUser) => [user.id],
 }));
 
@@ -314,26 +405,34 @@ export const saveUserProvider = createWriteQuery(
     providerId: number,
     extraFields?: Object
   ) => ({
-    query: dbUtil
-      .updateOne(
-        db,
-        'users',
-        {
-          id: userId,
-        },
-        {
-          $set: dbUtil.flattenSafe({
-            [providerMethod]: providerId,
-            ...extraFields,
-          }),
-        }
-      )
-      .then(result => {
-        const user = result[0];
-        if (!user) throw new Error(`Failed to update user with ID ${userId}.`);
+    query: dbUtil.tryCallAsync(
+      '[Shared] saveUserProvider',
+      { userId, providerMethod, providerId, extraFields },
+      () => {
+        return dbUtil
+          .updateOne(
+            db,
+            'users',
+            {
+              id: userId,
+            },
+            {
+              $set: dbUtil.flattenSafe({
+                [providerMethod]: providerId,
+                ...extraFields,
+              }),
+            }
+          )
+          .then(result => {
+            const user = result[0];
+            if (!user)
+              throw new Error(`Failed to update user with ID ${userId}.`);
 
-        return user;
-      }),
+            return user;
+          });
+      },
+      null
+    ),
     invalidateTags: (user: ?DBUser) => (user ? [user.id] : []),
   })
 );
@@ -347,10 +446,17 @@ export const saveUserProvider = createWriteQuery(
 // );
 export const getUserByIndex = createReadQuery(
   (indexName: string, indexValue: string) => ({
-    query: db
-      .collection('users')
-      .find({ [indexName]: indexValue })
-      .toArray(),
+    query: dbUtil.tryCallAsync(
+      '[Shared] getUserByIndex',
+      { indexName, indexValue },
+      () => {
+        return db
+          .collection('users')
+          .find({ [indexName]: indexValue })
+          .toArray();
+      },
+      []
+    ),
     process: (results: ?Array<DBUser>) => (results ? results[0] : null),
     tags: (user: ?DBUser) => (user ? [user.id] : []),
   })
@@ -400,46 +506,53 @@ export const getUserByIndex = createReadQuery(
 //     });
 // };
 export const createOrFindUser = (user: Object, providerMethod: string): Promise<?DBUser> => {
-  // if a user id gets passed in, we know that a user most likely exists and we just need to retrieve them from the db
-  // if not, we need to create a new user
-  let promise;
-  if (user.id) {
-    promise = getUserById(user.id);
-  } else if (user[providerMethod]) {
-    promise = getUserByIndex(providerMethod, user[providerMethod])
-      .then(storedUser => {
-          if (storedUser) {
-            return storedUser;
+  return dbUtil.tryCallAsync(
+    '[Shared] getUserById',
+    { user, providerMethod },
+    () => {
+      // if a user id gets passed in, we know that a user most likely exists and we just need to retrieve them from the db
+      // if not, we need to create a new user
+      let promise;
+      if (user.id) {
+        promise = getUserById(user.id);
+      } else if (user[providerMethod]) {
+        promise = getUserByIndex(providerMethod, user[providerMethod])
+          .then(storedUser => {
+              if (storedUser) {
+                return storedUser;
+              }
+
+              return Promise.resolve(null);
+            }
+          );
+      } else {
+        promise = Promise.resolve(null);
+      }
+
+      return promise
+        .then(storedUser => {
+          // if a user is found with the providerId, return the user in the db
+          if (storedUser && storedUser.id) {
+            return Promise.resolve(storedUser);
+          }
+          
+          // restrict new signups to github auth only
+          if (providerMethod !== 'githubProviderId') return Promise.resolve(null)
+          // if no user exists, create a new one with the oauth profile data
+          return storeUser(user);
+        })
+        .catch(err => {
+          if (user.id) {
+            console.error(err);
+            return null;
           }
 
-          return Promise.resolve(null);
-        }
-      );
-  } else {
-    promise = Promise.resolve(null);
-  }
-
-  return promise
-    .then(storedUser => {
-      // if a user is found with the providerId, return the user in the db
-      if (storedUser && storedUser.id) {
-        return Promise.resolve(storedUser);
-      }
-      
-      // restrict new signups to github auth only
-      if (providerMethod !== 'githubProviderId') return Promise.resolve(null)
-      // if no user exists, create a new one with the oauth profile data
-      return storeUser(user);
-    })
-    .catch(err => {
-      if (user.id) {
-        console.error(err);
-        return null;
-      }
-
-      if (providerMethod !== 'githubProviderId') return null
-      return storeUser(user);
-    });
+          if (providerMethod !== 'githubProviderId') return null
+          return storeUser(user);
+        });
+    },
+    null
+  )
 };
 
 // prettier-ignore
@@ -469,27 +582,34 @@ export const createOrFindUser = (user: Object, providerMethod: string): Promise<
 //     );
 // };
 export const getEverything = (userId: string, options: PaginationOptions): Promise<Array<any>> => {
-  const { first, after } = options
-  return db
-    .collection('usersChannels')
-    .find({ 
-      userId: userId, 
-      $or: [{ isMember: true }, { isOwner: true }, { isModerator: true }] 
-    })
-    .map(userChannel => userChannel.channelId)
-    .toArray()
-    .then(
-      userChannels =>
-        userChannels &&
-        userChannels.length > 0 &&
-        db
-          .collection('threads')
-          .find({ channelId: { $in: userChannels } })
-          .sort({ lastActive: -1 })
-          .skip(after || 0)
-          .limit(first)
-          .toArray()
-    );
+  return dbUtil.tryCallAsync(
+    '[Shared] getEverything', 
+    { userId, options },
+    () => {
+      const { first, after } = options
+      return db
+        .collection('usersChannels')
+        .find({ 
+          userId: userId, 
+          $or: [{ isMember: true }, { isOwner: true }, { isModerator: true }] 
+        })
+        .map(userChannel => userChannel.channelId)
+        .toArray()
+        .then(
+          userChannels =>
+            userChannels &&
+            userChannels.length > 0 &&
+            db
+              .collection('threads')
+              .find({ channelId: { $in: userChannels } })
+              .sort({ lastActive: -1 })
+              .skip(after || 0)
+              .limit(first)
+              .toArray()
+        );
+    }, 
+    []
+  );
 };
 
 type UserThreadCount = {
@@ -515,18 +635,25 @@ type UserThreadCount = {
 //   });
 // };
 export const getUsersThreadCount = (threadIds: Array<string>): Promise<Array<UserThreadCount>> => {
-  const getThreadCounts = threadIds.map(creatorId =>
-    db
-      .collection('threads')
-      .countDocuments({ creatorId: creatorId })
-  );
-
-  return Promise.all(getThreadCounts).then(result => {
-    return result.map((threadCount, index) => ({
-      id: threadIds[index],
-      count: threadCount,
-    }));
-  });
+  return dbUtil.tryCallAsync(
+    '[Shared] getUsersThreadCount',
+    { threadIds },
+    () => {
+      const getThreadCounts = threadIds.map(creatorId =>
+        db
+          .collection('threads')
+          .countDocuments({ creatorId: creatorId })
+      );
+    
+      return Promise.all(getThreadCounts).then(result => {
+        return result.map((threadCount, index) => ({
+          id: threadIds[index],
+          count: threadCount,
+        }));
+      });
+    },
+    []
+  )
 };
 
 export type EditUserInput = {
@@ -730,144 +857,153 @@ export const editUser = createWriteQuery(
     } = args.input;
 
     return {
-      query: db
-        .collection('users')
-        .findOne({ id: userId })
-        .then(result => {
-          return Object.assign({}, result, {
-            name,
-            description,
-            website,
-            username,
-            timezone,
-            modifiedAt: new Date(),
-          });
-        })
-        .then(user => {
-          if (user.username) {
-            searchQueue.add({
-              id: user.id,
-              type: 'user',
-              event: 'edited',
-            });
-          }
-
-          if (file || coverFile) {
-            if (file && !coverFile) {
-              return uploadImage(file, 'users', user.id)
-                .then(profilePhoto => {
-                  // update the user with the profilePhoto
-                  return (
-                    dbUtil
-                      .updateOne(
-                        db,
-                        'users',
-                        {
-                          id: user.id,
-                        },
-                        {
-                          $set: dbUtil.flattenSafe({
-                            ...user,
-                            profilePhoto,
-                          }),
-                        }
-                      )
-                      // return the resulting user with the profilePhoto set
-                      .then(result => {
-                        return result[0];
-                      })
-                  );
-                })
-                .catch(err => {
-                  console.error(err);
-                });
-            } else if (!file && coverFile) {
-              return uploadImage(coverFile, 'users', user.id)
-                .then(coverPhoto => {
-                  // update the user with the profilePhoto
-                  return (
-                    dbUtil
-                      .updateOne(
-                        db,
-                        'users',
-                        {
-                          id: user.id,
-                        },
-                        {
-                          $set: dbUtil.flattenSafe({
-                            ...user,
-                            coverPhoto,
-                          }),
-                        }
-                      )
-                      // return the resulting user with the profilePhoto set
-                      .then(result => {
-                        return result[0];
-                      })
-                  );
-                })
-                .catch(err => {
-                  console.error(err);
-                });
-            } else if (file && coverFile) {
-              const uploadFile = file => {
-                return uploadImage(file, 'users', user.id).catch(err => {
-                  console.error(err);
-                });
-              };
-
-              const uploadCoverFile = coverFile => {
-                return uploadImage(coverFile, 'users', user.id).catch(err => {
-                  console.error(err);
-                });
-              };
-
-              return Promise.all([
-                uploadFile(file),
-                uploadCoverFile(coverFile),
-              ]).then(([profilePhoto, coverPhoto]) => {
-                return (
-                  dbUtil
-                    .updateOne(
-                      db,
-                      'users',
-                      {
-                        id: user.id,
-                      },
-                      {
-                        $set: dbUtil.flattenSafe({
-                          ...user,
-                          coverPhoto,
-                          profilePhoto,
-                        }),
-                      }
-                    )
-                    // return the resulting community with the profilePhoto set
-                    .then(result => {
-                      return result[0];
-                    })
-                );
+      query: dbUtil.tryCallAsync(
+        '[Shared] editUser',
+        { args, userId },
+        () => {
+          return db
+            .collection('users')
+            .findOne({ id: userId })
+            .then(result => {
+              return Object.assign({}, result, {
+                name,
+                description,
+                website,
+                username,
+                timezone,
+                modifiedAt: new Date(),
               });
-            }
-          } else {
-            return dbUtil
-              .updateOne(
-                db,
-                'users',
-                {
+            })
+            .then(user => {
+              if (user.username) {
+                searchQueue.add({
                   id: user.id,
-                },
-                {
-                  $set: dbUtil.flattenSafe({
-                    ...user,
-                  }),
+                  type: 'user',
+                  event: 'edited',
+                });
+              }
+
+              if (file || coverFile) {
+                if (file && !coverFile) {
+                  return uploadImage(file, 'users', user.id)
+                    .then(profilePhoto => {
+                      // update the user with the profilePhoto
+                      return (
+                        dbUtil
+                          .updateOne(
+                            db,
+                            'users',
+                            {
+                              id: user.id,
+                            },
+                            {
+                              $set: dbUtil.flattenSafe({
+                                ...user,
+                                profilePhoto,
+                              }),
+                            }
+                          )
+                          // return the resulting user with the profilePhoto set
+                          .then(result => {
+                            return result[0];
+                          })
+                      );
+                    })
+                    .catch(err => {
+                      console.error(err);
+                    });
+                } else if (!file && coverFile) {
+                  return uploadImage(coverFile, 'users', user.id)
+                    .then(coverPhoto => {
+                      // update the user with the profilePhoto
+                      return (
+                        dbUtil
+                          .updateOne(
+                            db,
+                            'users',
+                            {
+                              id: user.id,
+                            },
+                            {
+                              $set: dbUtil.flattenSafe({
+                                ...user,
+                                coverPhoto,
+                              }),
+                            }
+                          )
+                          // return the resulting user with the profilePhoto set
+                          .then(result => {
+                            return result[0];
+                          })
+                      );
+                    })
+                    .catch(err => {
+                      console.error(err);
+                    });
+                } else if (file && coverFile) {
+                  const uploadFile = file => {
+                    return uploadImage(file, 'users', user.id).catch(err => {
+                      console.error(err);
+                    });
+                  };
+
+                  const uploadCoverFile = coverFile => {
+                    return uploadImage(coverFile, 'users', user.id).catch(
+                      err => {
+                        console.error(err);
+                      }
+                    );
+                  };
+
+                  return Promise.all([
+                    uploadFile(file),
+                    uploadCoverFile(coverFile),
+                  ]).then(([profilePhoto, coverPhoto]) => {
+                    return (
+                      dbUtil
+                        .updateOne(
+                          db,
+                          'users',
+                          {
+                            id: user.id,
+                          },
+                          {
+                            $set: dbUtil.flattenSafe({
+                              ...user,
+                              coverPhoto,
+                              profilePhoto,
+                            }),
+                          }
+                        )
+                        // return the resulting community with the profilePhoto set
+                        .then(result => {
+                          return result[0];
+                        })
+                    );
+                  });
                 }
-              )
-              .then(result => {
-                return result[0];
-              });
-          }
-        }),
+              } else {
+                return dbUtil
+                  .updateOne(
+                    db,
+                    'users',
+                    {
+                      id: user.id,
+                    },
+                    {
+                      $set: dbUtil.flattenSafe({
+                        ...user,
+                      }),
+                    }
+                  )
+                  .then(result => {
+                    return result[0];
+                  });
+              }
+            });
+        },
+        null
+      ),
       invalidateTags: () => [userId],
     };
   }
@@ -891,24 +1027,31 @@ export const editUser = createWriteQuery(
 //     });
 // };
 export const setUserOnline = async (id: string, isOnline: boolean) => {
-  return await dbUtil
-    .updateOne(
-      db,
-      'users',
-      {
-        id: id,
-      },
-      {
-        $set: {
-          isOnline,
-          lastSeen: new Date(),
-        },
-      }
-    )
-    .then(res => {
-      const user = res[0];
-      return user;
-    });
+  return dbUtil.tryCallAsync(
+    '[Shared] setUserOnline',
+    { id, isOnline },
+    async () => {
+      return await dbUtil
+        .updateOne(
+          db,
+          'users',
+          {
+            id: id,
+          },
+          {
+            $set: {
+              isOnline,
+              lastSeen: new Date(),
+            },
+          }
+        )
+        .then(res => {
+          const user = res[0];
+          return user;
+        });
+    },
+    null
+  );
 };
 
 // export const setUserPendingEmail = createWriteQuery(
@@ -943,28 +1086,35 @@ export const setUserOnline = async (id: string, isOnline: boolean) => {
 // );
 export const setUserPendingEmail = createWriteQuery(
   (userId: string, pendingEmail: string) => ({
-    query: dbUtil
-      .updateOne(
-        db,
-        'users',
-        {
-          id: userId,
-        },
-        {
-          $set: {
-            pendingEmail: pendingEmail,
-          },
-        }
-      )
-      .then(res => {
-        const user = res[0];
-        if (!user)
-          throw new Error(
-            `Failed to set user pending email to ${pendingEmail} for user ${userId}.`
-          );
+    query: dbUtil.tryCallAsync(
+      '[Shared] setUserPendingEmail',
+      { userId, pendingEmail },
+      () => {
+        return dbUtil
+          .updateOne(
+            db,
+            'users',
+            {
+              id: userId,
+            },
+            {
+              $set: {
+                pendingEmail: pendingEmail,
+              },
+            }
+          )
+          .then(res => {
+            const user = res[0];
+            if (!user)
+              throw new Error(
+                `Failed to set user pending email to ${pendingEmail} for user ${userId}.`
+              );
 
-        return user;
-      }),
+            return user;
+          });
+      },
+      null
+    ),
     invalidateTags: () => [userId],
   })
 );
@@ -1002,31 +1152,38 @@ export const setUserPendingEmail = createWriteQuery(
 // );
 export const updateUserEmail = createWriteQuery(
   (userId: string, email: string) => ({
-    query: dbUtil
-      .updateOne(
-        db,
-        'users',
-        {
-          id: userId,
-        },
-        {
-          $set: {
-            email,
-          },
-          $unset: {
-            pendingEmail: '',
-          },
-        }
-      )
-      .then(res => {
-        const user = res[0];
-        if (!user)
-          throw new Error(
-            `Failed to update user email to ${email} for user ${userId}.`
-          );
+    query: dbUtil.tryCallAsync(
+      '[Shared] updateUserEmail',
+      { userId, email },
+      () => {
+        return dbUtil
+          .updateOne(
+            db,
+            'users',
+            {
+              id: userId,
+            },
+            {
+              $set: {
+                email,
+              },
+              $unset: {
+                pendingEmail: '',
+              },
+            }
+          )
+          .then(res => {
+            const user = res[0];
+            if (!user)
+              throw new Error(
+                `Failed to update user email to ${email} for user ${userId}.`
+              );
 
-        return user;
-      }),
+            return user;
+          });
+      },
+      null
+    ),
     invalidateTags: () => [userId],
   })
 );
@@ -1079,45 +1236,52 @@ export const updateUserEmail = createWriteQuery(
 //   invalidateTags: () => [userId],
 // }));
 export const deleteUser = createWriteQuery((userId: string) => ({
-  query: dbUtil
-    .updateOne(
-      db,
-      'users',
-      {
-        id: userId,
-      },
-      {
-        username: null,
-        email: null,
-        deletedAt: new Date(),
-        providerId: null,
-        fbProviderId: null,
-        googleProviderId: null,
-        githubProviderId: null,
-        githubUsername: null,
-        profilePhoto: null,
-        description: null,
-        website: null,
-        timezone: null,
-        lastSeen: null,
-        modifiedAt: null,
-        firstName: null,
-        lastName: null,
-        pendingEmail: null,
-        name: 'Deleted',
-      }
-    )
-    .then(res => {
-      const user = res[0];
+  query: dbUtil.tryCallAsync(
+    '[Shared] deleteUser',
+    { userId },
+    () => {
+      return dbUtil
+        .updateOne(
+          db,
+          'users',
+          {
+            id: userId,
+          },
+          {
+            username: null,
+            email: null,
+            deletedAt: new Date(),
+            providerId: null,
+            fbProviderId: null,
+            googleProviderId: null,
+            githubProviderId: null,
+            githubUsername: null,
+            profilePhoto: null,
+            description: null,
+            website: null,
+            timezone: null,
+            lastSeen: null,
+            modifiedAt: null,
+            firstName: null,
+            lastName: null,
+            pendingEmail: null,
+            name: 'Deleted',
+          }
+        )
+        .then(res => {
+          const user = res[0];
 
-      searchQueue.add({
-        id: userId,
-        type: 'user',
-        event: 'deleted',
-      });
+          searchQueue.add({
+            id: userId,
+            type: 'user',
+            event: 'deleted',
+          });
 
-      return user;
-    }),
+          return user;
+        });
+    },
+    null
+  ),
   invalidateTags: () => [userId],
 }));
 
@@ -1230,24 +1394,28 @@ export const banUser = createWriteQuery((args: BanUserType) => {
 
   return {
     invalidateTags: () => [userId],
-    query: dbUtil
-      .updateOne(
-        db,
-        'users',
-        {
-          id: userId,
-        },
-        {
-          bannedAt: new Date(),
-          bannedBy: currentUserId,
-          bannedReason: reason,
-          username: null,
-          coverPhoto: null, // in case the photo is inappropriate
-          profilePhoto: null, // in case the photo is inappropriate
-        }
-      )
-      .then(async () => {
-        /*  
+    query: dbUtil.tryCallAsync(
+      '[Shared] banUser',
+      { args },
+      () => {
+        return dbUtil
+          .updateOne(
+            db,
+            'users',
+            {
+              id: userId,
+            },
+            {
+              bannedAt: new Date(),
+              bannedBy: currentUserId,
+              bannedReason: reason,
+              username: null,
+              coverPhoto: null, // in case the photo is inappropriate
+              profilePhoto: null, // in case the photo is inappropriate
+            }
+          )
+          .then(async () => {
+            /*  
           after the user object has been cleared, the user
           can no longer be searched for, messaged, or viewed
           so we can simply cleanup db data to ensure they are
@@ -1255,93 +1423,96 @@ export const banUser = createWriteQuery((args: BanUserType) => {
           and their DMs cant be seen by other users
         */
 
-        searchQueue.add({
-          id: userId,
-          type: 'user',
-          event: 'deleted',
-        });
+            searchQueue.add({
+              id: userId,
+              type: 'user',
+              event: 'deleted',
+            });
 
-        const dmThreadIds = await db
-          .collection('usersDirectMessageThreads')
-          .find({ userId: userId })
-          .map(row => {
-            return row.threadId;
-          })
-          .toArray();
+            const dmThreadIds = await db
+              .collection('usersDirectMessageThreads')
+              .find({ userId: userId })
+              .map(row => {
+                return row.threadId;
+              })
+              .toArray();
 
-        let removeOtherParticipantsDmThreadIds, removeDMThreads;
-        if (dmThreadIds && dmThreadIds.length > 0) {
-          removeOtherParticipantsDmThreadIds = db
-            .collection('usersDirectMessageThreads')
-            .find({
-              threadId: { $in: dmThreadIds },
-              deletedAt: new Date(),
-            })
-            .toArray();
+            let removeOtherParticipantsDmThreadIds, removeDMThreads;
+            if (dmThreadIds && dmThreadIds.length > 0) {
+              removeOtherParticipantsDmThreadIds = db
+                .collection('usersDirectMessageThreads')
+                .find({
+                  threadId: { $in: dmThreadIds },
+                  deletedAt: new Date(),
+                })
+                .toArray();
 
-          removeDMThreads = await dbUtil.updateMany(
-            db,
-            'directMessageThreads',
-            {
-              id: {
-                $in: dmThreadIds,
-              },
-            },
-            {
-              deletedAt: new Date(),
+              removeDMThreads = await dbUtil.updateMany(
+                db,
+                'directMessageThreads',
+                {
+                  id: {
+                    $in: dmThreadIds,
+                  },
+                },
+                {
+                  deletedAt: new Date(),
+                }
+              );
             }
-          );
-        }
 
-        const publishedThreadIds = await db
-          .collection('threads')
-          .find({
-            creatorId: userId,
-          })
-          .map(row => {
-            return row.id;
-          })
-          .toArray();
+            const publishedThreadIds = await db
+              .collection('threads')
+              .find({
+                creatorId: userId,
+              })
+              .map(row => {
+                return row.id;
+              })
+              .toArray();
 
-        const deletePublishedThreadsPromises =
-          publishedThreadIds && publishedThreadIds.length > 0
-            ? publishedThreadIds.map(id => deleteThread(id, currentUserId))
-            : [];
+            const deletePublishedThreadsPromises =
+              publishedThreadIds && publishedThreadIds.length > 0
+                ? publishedThreadIds.map(id => deleteThread(id, currentUserId))
+                : [];
 
-        const usersThreadsIds = await db
-          .collection('usersThreads')
-          .find({ userId: userId })
-          .map(row => {
-            return row.threadId;
-          })
-          .toArray();
+            const usersThreadsIds = await db
+              .collection('usersThreads')
+              .find({ userId: userId })
+              .map(row => {
+                return row.threadId;
+              })
+              .toArray();
 
-        const usersMessagesIds = await db
-          .collection('messages')
-          .find({
-            threadId: {
-              $in: usersThreadsIds,
-            },
-            senderId: userId,
-          })
-          .map(row => row.id)
-          .toArray();
+            const usersMessagesIds = await db
+              .collection('messages')
+              .find({
+                threadId: {
+                  $in: usersThreadsIds,
+                },
+                senderId: userId,
+              })
+              .map(row => row.id)
+              .toArray();
 
-        const deleteSentMessagesPromises =
-          usersMessagesIds && usersMessagesIds.length > 0
-            ? usersMessagesIds.map(id => deleteMessage(currentUserId, id))
-            : [];
+            const deleteSentMessagesPromises =
+              usersMessagesIds && usersMessagesIds.length > 0
+                ? usersMessagesIds.map(id => deleteMessage(currentUserId, id))
+                : [];
 
-        return await Promise.all([
-          removeUsersCommunityMemberships(userId),
-          removeUsersChannelMemberships(userId),
-          disableAllThreadNotificationsForUser(userId),
-          disableAllUsersEmailSettings(userId),
-          removeOtherParticipantsDmThreadIds,
-          removeDMThreads,
-          ...deletePublishedThreadsPromises,
-          ...deleteSentMessagesPromises,
-        ]);
-      }),
+            return await Promise.all([
+              removeUsersCommunityMemberships(userId),
+              removeUsersChannelMemberships(userId),
+              disableAllThreadNotificationsForUser(userId),
+              disableAllUsersEmailSettings(userId),
+              removeOtherParticipantsDmThreadIds,
+              removeDMThreads,
+              ...deletePublishedThreadsPromises,
+              ...deleteSentMessagesPromises,
+            ]);
+          });
+      },
+      null
+    ),
   };
 });

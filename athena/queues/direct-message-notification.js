@@ -26,7 +26,9 @@ export default async (job: Job<DirectMessageNotificationJobData>) => {
   const { message: incomingMessage, userId: currentUserId } = job.data;
 
   debug(
-    `new job: direct message sent by ${currentUserId} in thread #${incomingMessage.threadId}`
+    `new job: direct message sent by ${currentUserId} in thread #${
+      incomingMessage.threadId
+    }`
   );
 
   // Check to see if an existing notif exists by matching the 'event' type, with the context of the notification, within a certain time period.

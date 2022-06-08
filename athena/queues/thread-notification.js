@@ -104,11 +104,15 @@ export default async (job: Job<ThreadNotificationJobData>) => {
         channel: slackChannel,
         attachments: [
           {
-            fallback: `New conversation published in ${community.name} #${channel.name}:`,
+            fallback: `New conversation published in ${community.name} #${
+              channel.name
+            }:`,
             author_name: `${author.name} (@${author.username})`,
             author_link: `https://spectrum.chat/users/${author.username}`,
             author_icon: signedAuthor.profilePhoto,
-            pretext: `New conversation published in ${community.name} #${channel.name}:`,
+            pretext: `New conversation published in ${community.name} #${
+              channel.name
+            }:`,
             title: truncateString(incomingThread.content.title, 80),
             title_link: `https://spectrum.chat/thread/${incomingThread.id}`,
             text: truncateString(plainTextBody, 140),

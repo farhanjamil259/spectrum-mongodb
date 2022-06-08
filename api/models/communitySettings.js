@@ -56,6 +56,7 @@ const defaultSettings = {
 export const getOrCreateCommunitySettings = (communityId: string): Promise<DBCommunitySettings> => {
   return dbUtil.tryCallAsync(
     "getOrCreateCommunitySettings",
+    { communityId },
     async () => {
       const settings = await db
         .collection("communitySettings")
@@ -98,6 +99,7 @@ export const getCommunitySettings = (id: string): Promise<DBCommunitySettings> =
   return dbUtil
     .tryCallAsync(
       "getCommunitySettings",
+      { id },
       () => {
         return db
           .collection('communitySettings')
@@ -167,6 +169,7 @@ export const getCommunitiesSettings = (communityIds: Array<string>): Promise<?DB
   return dbUtil
     .tryCallAsync(
       "getCommunitiesSettings",
+      { communityIds },
       () => {
         return db
           .collection('communitySettings')
@@ -429,6 +432,7 @@ export const updateSlackSettingsAfterConnection = (
 ): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     'updateSlackSettingsAfterConnection',
+    { communityId, input },
     async () => {
       const settings = await db
         .collection('communitySettings')
@@ -504,6 +508,7 @@ export const markInitialSlackInvitationsSent = (
 ): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     'markInitialSlackInvitationsSent',
+    { communityId, inviteCustomMessage },
     () => {
       return dbUtil
         .updateMany(
@@ -541,6 +546,7 @@ export const markInitialSlackInvitationsSent = (
 const resetSlackSettings = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'resetSlackSettings',
+    { communityId },
     () => {
       return dbUtil
         .updateMany(
@@ -656,6 +662,7 @@ const handleSlackChannelResponse = async (data: Object, communityId: string) => 
 export const enableCommunityTokenJoin = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'enableCommunityTokenJoin',
+    { communityId },
     () => {
       return dbUtil
         .updateMany(
@@ -698,6 +705,7 @@ export const enableCommunityTokenJoin = (communityId: string) => {
 export const disableCommunityTokenJoin = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'disableCommunityTokenJoin',
+    { communityId },
     () => {
       return dbUtil
         .updateMany(
@@ -739,6 +747,7 @@ export const disableCommunityTokenJoin = (communityId: string) => {
 export const resetCommunityJoinToken = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'resetCommunityJoinToken',
+    { communityId },
     () => {
       return dbUtil
         .updateMany(

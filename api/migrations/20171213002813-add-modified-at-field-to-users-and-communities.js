@@ -16,7 +16,7 @@
 //        more complete knowledge about when things are being changed or deleted in the database,
 //        which thus makes it easier for us to trace down replayable events should a server
 //        crash. E.g. we can know that if a worker crashed, there were 10 users who updated
-//        their profiles during the downtime based on the `modifiedAt` field
+//        their profiles during the downtime based on the `modifiedAt` field 
 
 //   */
 //   return Promise.all([
@@ -55,5 +55,7 @@ exports.up = function(r, conn) {
 //   ]);
 // };
 exports.down = function(r, conn) {
-  return Promise.all([Promise.resolve()]);
+  return Promise.all([
+    Promise.resolve()
+  ]);
 };

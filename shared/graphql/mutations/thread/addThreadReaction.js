@@ -14,9 +14,9 @@ export type AddThreadReactionType = {
 };
 
 export type AddThreadReactionProps = {
-  addThreadReaction: ({
-    input: { threadId: string },
-  }) => Promise<AddThreadReactionType>,
+  addThreadReaction: ({ input: { threadId: string } }) => Promise<
+    AddThreadReactionType
+  >,
 };
 
 export const addThreadReactionQuery = gql`

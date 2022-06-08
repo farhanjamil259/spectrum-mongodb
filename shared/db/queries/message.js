@@ -8,6 +8,13 @@ import dbUtil from 'shared/dbUtil';
 //   tags: (message: ?DBMessage) => (message ? [message.id] : []),
 // }));
 export const getMessageById = createReadQuery((id: string) => ({
-  query: db.collection('messages').findOne({ id: id }),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getMessageById',
+    { id },
+    () => {
+      return db.collection('messages').findOne({ id: id });
+    },
+    null
+  ),
   tags: (message: ?DBMessage) => (message ? [message.id] : []),
 }));

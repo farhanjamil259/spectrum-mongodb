@@ -15,6 +15,7 @@ const dbUtil = require('shared/dbUtil');
 export const getChannelSettings = (id: string) => {
   return dbUtil.tryCallAsync(
     'getChannelSettings',
+    { id },
     () => {
       return db
         .collection('channelSettings')

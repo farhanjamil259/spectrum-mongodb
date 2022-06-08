@@ -16,6 +16,7 @@ const dbUtil = require('shared/dbUtil');
 export const getCuratedCommunities = (type: string): Promise<Array<DBCommunity>> => {
   return dbUtil.tryCallAsync(
     "getCuratedCommunities",
+    { type },
     () => {
       return db
         .collection('curatedContent')

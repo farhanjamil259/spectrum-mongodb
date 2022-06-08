@@ -6,10 +6,7 @@ import { LoadingContainer, Spinner } from './style';
 export const Loading = ({
   size,
   color,
-}: {
-  size?: Number,
-  color?: String,
-}): React$Element<any> => (
+}: { size?: Number, color?: String }): React$Element<any> => (
   <LoadingContainer>
     <Spinner size={size} color={color} />
   </LoadingContainer>

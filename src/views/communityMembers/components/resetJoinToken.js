@@ -65,4 +65,7 @@ class ResetJoinToken extends React.Component<Props, State> {
   }
 }
 
-export default compose(connect(), resetJoinTokenMutation)(ResetJoinToken);
+export default compose(
+  connect(),
+  resetJoinTokenMutation
+)(ResetJoinToken);

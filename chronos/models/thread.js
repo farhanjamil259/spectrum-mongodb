@@ -37,6 +37,7 @@ export const getThreadsInChannelsInTimeframe = (
 ): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     'getThreadsInChannelsInTimeframe',
+    { timeframe, channelIds },
     async () => {
       const range = getRangeFromTimeframe(timeframe);
       let threads = [];

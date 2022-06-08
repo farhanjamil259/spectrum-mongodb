@@ -43,7 +43,9 @@ export class PrivateChannelRequestSent extends React.Component<Props> {
         isSeen={notification.isSeen}
       >
         <CardLink
-          to={`/${notification.context.payload.slug}/${notification.entities[0].payload.slug}/settings`}
+          to={`/${notification.context.payload.slug}/${
+            notification.entities[0].payload.slug
+          }/settings`}
         />
         <CardContent>
           <RequestContext>

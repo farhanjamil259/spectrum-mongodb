@@ -32,6 +32,7 @@ export type MessageTypes = 'text' | 'media';
 export const getMessage = (messageId: string): Promise<DBMessage> => {
   return dbUtil.tryCallAsync(
     'getMessage',
+    { messageId },
     () => {
       return db
         .collection('messages')
@@ -57,6 +58,7 @@ export const getMessage = (messageId: string): Promise<DBMessage> => {
 export const getManyMessages = (messageIds: string[]): Promise<DBMessage[]> => {
   return dbUtil.tryCallAsync(
     'getManyMessages',
+    { messageIds },
     () => {
       return db
         .collection('messages')
@@ -89,6 +91,7 @@ type BackwardsPaginationOptions = { last?: number, before?: number | Date };
 const getBackwardsMessages = (threadId: string, { last, before }: BackwardsPaginationOptions) => {
   return dbUtil.tryCallAsync(
     "getBackwardsMessages",
+    { threadId, last, before },
     () => {
       return db
         .collection('messages')
@@ -124,6 +127,7 @@ type ForwardsPaginationOptions = { first?: number, after?: number | Date };
 const getForwardMessages = (threadId: string, { first, after }: ForwardsPaginationOptions) => {
   return dbUtil.tryCallAsync(
     "getForwardMessages",
+    { threadId, first, after },
     () => {
       return db
         .collection('messages')
@@ -173,6 +177,7 @@ export const getMessages = (
 export const getLastMessage = (threadId: string): Promise<?DBMessage> => {
   return dbUtil.tryCallAsync(
     'getLastMessage',
+    { threadId },
     () => {
       return db
         .collection('messages')
@@ -204,6 +209,7 @@ export const getLastMessageOfThreads = (
 export const getMediaMessagesForThread = (threadId: string): Promise<Array<DBMessage>> => {
   return dbUtil.tryCallAsync(
     "getMediaMessagesForThread",
+    { threadId },
     () => {
       return db
         .collection('messages')
@@ -269,6 +275,7 @@ export const storeMessage = (message: Object, userId: string): Promise<DBMessage
   // Insert a message
   return dbUtil.tryCallAsync(
     "storeMessage",
+    { message, userId },
     () => {
       return dbUtil
         .insert(
@@ -330,14 +337,7 @@ export const storeMessage = (message: Object, userId: string): Promise<DBMessage
 //     })
 //     .filter(NEW_DOCUMENTS)('new_val')
 //     .run();
-const getNewMessageChangefeed = () =>
-  db
-    .collection('messages')
-    .changes({
-      includeInitial: false,
-    })
-    .filter(NEW_DOCUMENTS)('new_val')
-    .run();
+const getNewMessageChangefeed = () => {};
 
 export const listenToNewMessages = (cb: Function): Function => {
   return createChangefeed(getNewMessageChangefeed, cb, 'listenToNewMessages');
@@ -354,6 +354,7 @@ export const listenToNewMessages = (cb: Function): Function => {
 export const getMessageCount = (threadId: string): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getMessageCount',
+    { threadId },
     () => {
       return db
         .collection('messages')
@@ -376,6 +377,7 @@ export const getMessageCount = (threadId: string): Promise<number> => {
 export const getMessageCountInThreads = (threadIds: Array<string>): Promise<Array<mixed>> => {
   return dbUtil.tryCallAsync(
     "getMessageCountInThreads",
+    { threadIds },
     async () => {
       let ret = await db
         .collection('messages')
@@ -427,6 +429,7 @@ export const getMessageCountInThreads = (threadIds: Array<string>): Promise<Arra
 export const deleteMessage = (userId: string, messageId: string) => {
   return dbUtil.tryCallAsync(
     'deleteMessage',
+    { userId, messageId },
     () => {
       return dbUtil
         .updateOne(
@@ -504,6 +507,7 @@ export const deleteMessage = (userId: string, messageId: string) => {
 export const deleteMessagesInThread = (threadId: string, userId: string) => {
   return dbUtil.tryCallAsync(
     "deleteMessagesInThread",
+    { threadId, userId },
     async () => {
       const messages = await db
         .collection('messages')
@@ -557,6 +561,7 @@ export const deleteMessagesInThread = (threadId: string, userId: string) => {
 export const userHasMessagesInThread = (threadId: string, userId: string) => {
   return dbUtil.tryCallAsync(
     'userHasMessagesInThread',
+    { threadId, userId },
     async () => {
       let ret = await db
         .collection('messages')
@@ -620,6 +625,7 @@ type EditInput = {
 export const editMessage = (message: EditInput): Promise<DBMessage> => {
   return dbUtil.tryCallAsync(
     "editMessage",
+    { message },
     () => {
       // Insert a message
       return dbUtil.updateOne(db, 

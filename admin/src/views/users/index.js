@@ -13,10 +13,7 @@ import UserContainer from './containers/user';
 
 class UsersViewIndex extends Component {
   render() {
-    const {
-      data: { error, meta },
-      match,
-    } = this.props;
+    const { data: { error, meta }, match } = this.props;
     if (!meta || error) {
       return <div />;
     }

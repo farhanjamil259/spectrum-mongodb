@@ -20,6 +20,7 @@ export const getThreadNotificationUsers = async (
 ): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     'getThreadNotificationUsers',
+    { threadId },
     async () => {
       let ret = await db
         .collection('usersThreads')
@@ -55,6 +56,7 @@ export const getUsersThread = (
 ): Promise<?DBUsersThreads> => {
   return dbUtil.tryCallAsync(
     'getUsersThread',
+    { userId, threadId },
     () => {
       return db
         .collection('usersThreads')
@@ -85,6 +87,7 @@ export const getUserNotificationPermissionsInThread = (
 ): Promise<Boolean> => {
   return dbUtil.tryCallAsync(
     'getUserNotificationPermissionsInThread',
+    { userId, threadId },
     () => {
       return db
         .collection('usersThreads')
@@ -116,6 +119,7 @@ export const setUserThreadLastSeen = (
 ): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'setUserThreadLastSeen',
+    { userId, threadId, lastSeen },
     () => {
       return dbUtil.updateOne(
         db,
@@ -172,6 +176,7 @@ export const createUserThread = ({
 }) => {
   return dbUtil.tryCallAsync(
     'createUserThread',
+    { userId, threadId, lastSeen, isParticipant, receiveNotifications },
     () => {
       return dbUtil.insert(db, 'usersThreads', {
         createdAt: new Date(),

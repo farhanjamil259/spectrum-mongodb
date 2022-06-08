@@ -28,6 +28,12 @@ module.exports = {
         { user }: GraphQLContext,
         info: GraphQLResolveInfo
       ) => {
+        console.log(
+          '[subscriptions/directMessageThreads] subscribe:',
+          thread,
+          user
+        );
+
         if (!user || !user.id)
           return new UserError(
             'Can only listen to direct message thread updates when signed in.'

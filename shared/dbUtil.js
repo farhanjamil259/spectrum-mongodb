@@ -1,5 +1,3 @@
-console.log('dbUtil.js required');
-
 const uniqid = require('uniqid');
 var objectPath = require('object-path');
 const flatten = require('flat');
@@ -128,19 +126,25 @@ const updateMany = async (db, collection, filter, update) => {
     throw new Error(`invalid param 'update', object expected, got: ${filter}`);
   }
 
-  const matchedDocuments = await db.collection(collection).find(filter);
+  const matchedDocuments = await db
+    .collection(collection)
+    .find(filter)
+    .toArray();
 
   return db
     .collection(collection)
     .updateMany(filter, update)
     .then(() => {
-      return db.collection(collection).find({
-        id: {
-          $in: matchedDocuments.map(matchedDocument => {
-            return matchedDocument.id;
-          }),
-        },
-      });
+      return db
+        .collection(collection)
+        .find({
+          id: {
+            $in: matchedDocuments.map(matchedDocument => {
+              return matchedDocument.id;
+            }),
+          },
+        })
+        .toArray();
     });
 };
 
@@ -151,8 +155,7 @@ const withoutOne = (document, filter) => {
     );
   } else if (
     !filter ||
-    typeof filter != 'string' ||
-    typeof filter != 'object'
+    (typeof filter != 'string' && typeof filter != 'object')
   ) {
     throw new Error(
       `invalid param 'filter', string or object expected, got: ${filter}`
@@ -191,10 +194,10 @@ const withoutOne = (document, filter) => {
 const without = (array, selector) => {
   if (!array || !Array.isArray(array)) {
     throw new Error(`invalid param 'array', array expected, got: ${array}`);
-  } else if (!filter) {
-    throw new Error('filter cannot be undefined or null');
-  } else if (typeof filter != 'string' && typeof filter != 'object') {
-    throw new Error('filter must be a string or an object');
+  } else if (!selector) {
+    throw new Error('selector cannot be undefined or null');
+  } else if (typeof selector != 'string' && typeof selector != 'object') {
+    throw new Error('selector must be a string or an object');
   }
 
   return array.map(document => {
@@ -324,35 +327,71 @@ const pluckOne = (obj, ...selectors) => {
   return projection;
 };
 
-const pluckMany = (array, ...selectors) => {
+const pluck = (array, ...selectors) => {
   return array.map(document => {
     return pluckOne(document, ...selectors);
   });
 };
 
-const tryCallAsync = (funcName, func, defaultValue) => {
+const tryCallAsync = (funcName, params, func, defaultValue) => {
+  if (!funcName || typeof funcName != 'string' || funcName == '') {
+    throw new Error(
+      'invalid param funcName non-null non-empty string expected'
+    );
+  } else if (!params || typeof params != 'object') {
+    throw new Error("invalid param 'params' expected object value");
+  } else if (!func) {
+    throw new Error('invalid param func - function expected got nothing');
+  }
+
   try {
     const value = func();
-    if (value) {
-      return value
-        .then(result => {
-          if (result) {
-            console.log(`${funcName} called, value:`, result);
-            return result;
-          } else {
-            console.log(`${funcName} called, no value returned`);
-            return defaultValue;
-          }
-        })
-        .catch(error => {
-          console.log(`Failed to call function '${funcName}', because:`, error);
-          return defaultValue;
-        });
-    } else {
-      throw new Error('Promise expected, got nothing');
+    if (!value || !value.then) {
+      throw new Error(
+        `\n[Query] ${funcName} -- Promise Expected\n\tParams:`,
+        params,
+        '\n'
+      );
     }
+
+    return value
+      .then(result => {
+        if (result != undefined && result != null) {
+          console.log(
+            `\n[Query] ${funcName} -- Returned Value:`,
+            result,
+            '\n\tParams:',
+            params,
+            '\n'
+          );
+          return result;
+        } else {
+          console.warn(
+            `\n!!!!!!!!!! [Query] ${funcName} -- No Value Returned\n\tParams:`,
+            params,
+            '\n'
+          );
+          return defaultValue;
+        }
+      })
+      .catch(error => {
+        console.error(
+          `\n!!!!!!!!!! [Query] ${funcName} -- Failed - Error:`,
+          error,
+          '\n\tParams:',
+          params,
+          '\n'
+        );
+        return defaultValue;
+      });
   } catch (error) {
-    console.log(`Failed to call function '${funcName}', because:`, error);
+    console.error(
+      `\n!!!!!!!!!! [Query] ${funcName} -- Failed - Error:`,
+      error,
+      '\n\tParams:',
+      params,
+      '\n'
+    );
     return defaultValue;
   }
 };
@@ -483,7 +522,7 @@ module.exports = {
   updateOne,
   updateMany,
   pluckOne,
-  pluckMany,
+  pluck,
   tryCall,
   tryCallAsync,
   flattenSafe,

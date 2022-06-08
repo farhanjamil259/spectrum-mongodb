@@ -14,6 +14,7 @@ const dbUtil = require('shared/dbUtil');
 export const getSeenUsersNotifications = (after: number, limit: number): Promise<Array<DBUsersNotifications>> => {
   return dbUtil.tryCallAsync(
     "getSeenUsersNotifications",
+    { after, limit },
     () => {
       return db
         .collection('usersNotifications')
@@ -38,6 +39,7 @@ export const getSeenUsersNotifications = (after: number, limit: number): Promise
 export const deleteUsersNotifications = (arr: Array<string>): Promise<boolean> => {
   return dbUtil.tryCallAsync(
     "deleteUsersNotifications",
+    { arr },
     () => {
       return db
         .collection('usersNotifications')

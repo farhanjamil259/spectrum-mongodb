@@ -250,7 +250,9 @@ Promise.all([
   db.collection('messages').insertMany(messages),
   db.collection('users').insertMany(users),
   db.collection('usersSettings').insertMany(usersSettings),
-  db.collection('reactions').insertMany(reactions),
+  db
+    .collection('reactions')
+    .insertMany(reactions),
   db.collection('directMessageThreads').insertMany(directMessageThreads),
   db.collection('messages').insertMany(direct_messages),
   db.collection('usersCommunities').insertMany(usersCommunities),

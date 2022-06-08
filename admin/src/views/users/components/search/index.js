@@ -270,4 +270,9 @@ class Search extends React.Component<Props, State> {
   }
 }
 
-export default compose(withApollo, withRouter, connect(), pure)(Search);
+export default compose(
+  withApollo,
+  withRouter,
+  connect(),
+  pure
+)(Search);

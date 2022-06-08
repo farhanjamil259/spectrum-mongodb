@@ -112,7 +112,7 @@
 //           },
 //         ];
 
-const dbUtil = require('./dbUtil');
+const dbUtil = require("./dbUtil");
 
 //         const insertPromises = types.map(type => {
 //           return r

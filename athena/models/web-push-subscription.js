@@ -25,9 +25,12 @@ export const storeSubscription = (
 ) => {
   return dbUtil.tryCallAsync(
     'storeSubscription',
+    { subscription, userId },
     () => {
       debug(
-        `store subscription for user#${userId}, endpoint ${subscription.endpoint}`
+        `store subscription for user#${userId}, endpoint ${
+          subscription.endpoint
+        }`
       );
       return dbUtil.insertOne('webPushSubscriptions', {
         ...subscription,
@@ -48,6 +51,7 @@ export const storeSubscription = (
 export const getSubscriptions = (userId: string) => {
   return dbUtil.tryCallAsync(
     'getSubscriptions',
+    { userId },
     () => {
       debug(`get subscriptions for user#${userId}`);
       return db
@@ -70,6 +74,7 @@ export const getSubscriptions = (userId: string) => {
 export const removeSubscription = (endpoint: string) => {
   return dbUtil.tryCallAsync(
     'removeSubscription',
+    { endpoint },
     () => {
       debug(`remove subscription ${endpoint}`);
       return db

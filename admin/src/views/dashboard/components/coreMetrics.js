@@ -141,111 +141,112 @@ class CoreMetrics extends React.Component<Props, State> {
               );
             })}
         </Legend>
-        {data && hasLinesToRender && (
-          <LineChart
-            width={window.innerWidth - 72}
-            height={400}
-            data={data}
-            margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-          >
-            {this.state.dau && (
-              <Line type="monotone" dataKey="DAU" stroke={cColors.dau} />
-            )}
+        {data &&
+          hasLinesToRender && (
+            <LineChart
+              width={window.innerWidth - 72}
+              height={400}
+              data={data}
+              margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+            >
+              {this.state.dau && (
+                <Line type="monotone" dataKey="DAU" stroke={cColors.dau} />
+              )}
 
-            {this.state.wau && (
-              <Line type="monotone" dataKey="WAU" stroke={cColors.wau} />
-            )}
+              {this.state.wau && (
+                <Line type="monotone" dataKey="WAU" stroke={cColors.wau} />
+              )}
 
-            {this.state.mau && (
-              <Line type="monotone" dataKey="MAU" stroke={cColors.mau} />
-            )}
+              {this.state.mau && (
+                <Line type="monotone" dataKey="MAU" stroke={cColors.mau} />
+              )}
 
-            {this.state.dac && (
-              <Line type="monotone" dataKey="DAC" stroke={cColors.dac} />
-            )}
+              {this.state.dac && (
+                <Line type="monotone" dataKey="DAC" stroke={cColors.dac} />
+              )}
 
-            {this.state.wac && (
-              <Line type="monotone" dataKey="WAC" stroke={cColors.wac} />
-            )}
+              {this.state.wac && (
+                <Line type="monotone" dataKey="WAC" stroke={cColors.wac} />
+              )}
 
-            {this.state.mac && (
-              <Line type="monotone" dataKey="MAC" stroke={cColors.mac} />
-            )}
+              {this.state.mac && (
+                <Line type="monotone" dataKey="MAC" stroke={cColors.mac} />
+              )}
 
-            {this.state.cpu && (
-              <Line
-                type="monotone"
-                dataKey="communities/user"
-                stroke={cColors.cpu}
-              />
-            )}
+              {this.state.cpu && (
+                <Line
+                  type="monotone"
+                  dataKey="communities/user"
+                  stroke={cColors.cpu}
+                />
+              )}
 
-            {this.state.mpu && (
-              <Line
-                type="monotone"
-                dataKey="messages/user"
-                stroke={cColors.mpu}
-              />
-            )}
+              {this.state.mpu && (
+                <Line
+                  type="monotone"
+                  dataKey="messages/user"
+                  stroke={cColors.mpu}
+                />
+              )}
 
-            {this.state.tpu && (
-              <Line
-                type="monotone"
-                dataKey="threads/user"
-                stroke={cColors.tpu}
-              />
-            )}
+              {this.state.tpu && (
+                <Line
+                  type="monotone"
+                  dataKey="threads/user"
+                  stroke={cColors.tpu}
+                />
+              )}
 
-            {this.state.users && (
-              <Line type="monotone" dataKey="users" stroke={cColors.users} />
-            )}
+              {this.state.users && (
+                <Line type="monotone" dataKey="users" stroke={cColors.users} />
+              )}
 
-            {this.state.communities && (
-              <Line
-                type="monotone"
-                dataKey="communities"
-                stroke={cColors.communities}
-              />
-            )}
+              {this.state.communities && (
+                <Line
+                  type="monotone"
+                  dataKey="communities"
+                  stroke={cColors.communities}
+                />
+              )}
 
-            {this.state.threads && (
-              <Line
-                type="monotone"
-                dataKey="threads"
-                stroke={cColors.threads}
-              />
-            )}
+              {this.state.threads && (
+                <Line
+                  type="monotone"
+                  dataKey="threads"
+                  stroke={cColors.threads}
+                />
+              )}
 
-            {this.state.dmThreads && (
-              <Line
-                type="monotone"
-                dataKey="dmThreads"
-                stroke={cColors.dmThreads}
-              />
-            )}
+              {this.state.dmThreads && (
+                <Line
+                  type="monotone"
+                  dataKey="dmThreads"
+                  stroke={cColors.dmThreads}
+                />
+              )}
 
-            {this.state.threadMessages && (
-              <Line
-                type="monotone"
-                dataKey="threadMessages"
-                stroke={cColors.threadMessages}
-              />
-            )}
+              {this.state.threadMessages && (
+                <Line
+                  type="monotone"
+                  dataKey="threadMessages"
+                  stroke={cColors.threadMessages}
+                />
+              )}
 
-            {this.state.dmMessages && (
-              <Line
-                type="monotone"
-                dataKey="dmMessages"
-                stroke={cColors.dmMessages}
-              />
-            )}
+              {this.state.dmMessages && (
+                <Line
+                  type="monotone"
+                  dataKey="dmMessages"
+                  stroke={cColors.dmMessages}
+                />
+              )}
 
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Brush dataKey="date" data={data} />
-          </LineChart>
-        )}
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Brush dataKey="date" data={data} />
+            </LineChart>
+          )}
       </CoreMetricsContainer>
     );
   }

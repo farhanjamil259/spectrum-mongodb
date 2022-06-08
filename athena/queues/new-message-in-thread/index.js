@@ -31,7 +31,9 @@ export default async (job: Job<MessageNotificationJobData>) => {
   const { senderId: messageSenderId } = incomingMessage;
 
   debug(
-    `new job: message sent by ${messageSenderId} in thread #${incomingMessage.threadId}`
+    `new job: message sent by ${messageSenderId} in thread #${
+      incomingMessage.threadId
+    }`
   );
 
   // Do not send notification emails for bot messages

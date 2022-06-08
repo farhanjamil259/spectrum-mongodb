@@ -254,7 +254,7 @@
 //       })
 //   );
 
-const dbUtil = require('./dbUtil');
+const dbUtil = require("./dbUtil");
 
 // };
 exports.up = function(r, conn) {

@@ -50,9 +50,11 @@ const dbUtil = require('shared/dbUtil');
 export const createOwnerInCommunity = (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "createOwnerInCommunity",
+    { communityId, userId },
     () => {
       return dbUtil
         .insert(
+          db,
           'usersCommunities',
           {
             communityId,
@@ -141,6 +143,7 @@ export const createOwnerInCommunity = (communityId: string, userId: string): Pro
 export const createMemberInCommunity = (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "createMemberInCommunity",
+    { communityId, userId },
     () => {
       return db
         .collection('usersCommunities')
@@ -240,6 +243,7 @@ export const createMemberInCommunity = (communityId: string, userId: string): Pr
 export const removeMemberInCommunity = (communityId: string, userId: string): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     "removeMemberInCommunity",
+    { communityId, userId },
     () => {
       return db
         .collection('usersCommunities')
@@ -299,6 +303,7 @@ export const removeMemberInCommunity = (communityId: string, userId: string): Pr
 export const removeMembersInCommunity = async (communityId: string): Promise<?Object> => {
   return dbUtil.tryCallAsync(
     "removeMembersInCommunity",
+    { communityId },
     async () => {
       const usersCommunities = await db
         .collection('usersCommunities')
@@ -358,6 +363,7 @@ export const removeMembersInCommunity = async (communityId: string): Promise<?Ob
 export const blockUserInCommunity = (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "blockUserInCommunity",
+    { communityId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -419,6 +425,7 @@ export const blockUserInCommunity = (communityId: string, userId: string): Promi
 export const unblockUserInCommunity = (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "unblockUserInCommunity",
+    { communityId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -474,6 +481,7 @@ export const unblockUserInCommunity = (communityId: string, userId: string): Pro
 export const makeMemberModeratorInCommunity = (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "makeMemberModeratorInCommunity",
+    { communityId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -519,6 +527,7 @@ export const makeMemberModeratorInCommunity = (communityId: string, userId: stri
 export const removeModeratorInCommunity = (communityId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "removeModeratorInCommunity",
+    { communityId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -562,6 +571,7 @@ export const removeModeratorInCommunity = (communityId: string, userId: string):
 export const removeModeratorsInCommunity = async (communityId: string): Promise<?Object> => {
   return dbUtil.tryCallAsync(
     "removeModeratorsInCommunity",
+    { communityId },
     async () => {
       const moderators = await db
         .collection('usersCommunities')
@@ -622,6 +632,7 @@ export const removeModeratorsInCommunity = async (communityId: string): Promise<
 export const removeUsersCommunityMemberships = async (userId: string) => {
   return dbUtil.tryCallAsync(
     'removeUsersCommunityMemberships',
+    { userId },
     async () => {
       const memberships = await db
         .collection('usersCommunities')
@@ -709,6 +720,7 @@ export const removeUsersCommunityMemberships = async (userId: string) => {
 export const createPendingMemberInCommunity = async (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "createPendingMemberInCommunity",
+    { communityId, userId },
     () => {
       return db
         .collection('usersCommunities')
@@ -779,6 +791,7 @@ export const createPendingMemberInCommunity = async (communityId: string, userId
 export const removePendingMemberInCommunity = async (communityId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "removePendingMemberInCommunity",
+    { communityId, userId },
     () => {
       return dbUtil
         .updateOne(
@@ -826,6 +839,7 @@ export const approvePendingMemberInCommunity = async (
 ): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     'approvePendingMemberInCommunity',
+    { communityId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -877,6 +891,7 @@ export const blockPendingMemberInCommunity = async (
 ): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     'blockPendingMemberInCommunity',
+    { communityId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -929,6 +944,7 @@ type Options = { first: number, after: number };
 export const getMembersInCommunity = (communityId: string, options: Options): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getMembersInCommunity",
+    { communityId, options },
     () => {
       const { first, after } = options
       return db
@@ -967,6 +983,7 @@ export const getMembersInCommunity = (communityId: string, options: Options): Pr
 export const getBlockedUsersInCommunity = (communityId: string, options: Options): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getBlockedUsersInCommunity",
+    { communityId, options },
     () => {
       return (
         db
@@ -999,6 +1016,7 @@ export const getBlockedUsersInCommunity = (communityId: string, options: Options
 export const getPendingUsersInCommunity = (communityId: string, options: Options): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getPendingUsersInCommunity",
+    { communityId, options },
     () => {
       return (
         db
@@ -1030,6 +1048,7 @@ export const getPendingUsersInCommunity = (communityId: string, options: Options
 export const getModeratorsInCommunity = (communityId: string, options: Options): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getModeratorsInCommunity",
+    { communityId, options },
     () => {
       return (
         db
@@ -1063,6 +1082,7 @@ export const getOwnersInCommunity = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getOwnersInCommunity',
+    { communityId, options },
     () => {
       return db
         .collection('usersCommunities')
@@ -1094,6 +1114,7 @@ export const getTeamMembersInCommunity = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getTeamMembersInCommunity',
+    { communityId, options },
     () => {
       return db
         .collection('usersCommunities')
@@ -1144,6 +1165,7 @@ export const DEFAULT_USER_COMMUNITY_PERMISSIONS = {
 export const getUserPermissionsInCommunity = (communityId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "getUserPermissionsInCommunity",
+    { communityId, userId },
     () => {
       return db
         .collection('usersCommunities')
@@ -1178,6 +1200,7 @@ export const getUserPermissionsInCommunity = (communityId: string, userId: strin
 export const checkUserPermissionsInCommunity = (communityId: string, userId: string): Promise<DBUsersCommunities> => {
   return dbUtil.tryCallAsync(
     "checkUserPermissionsInCommunity",
+    { communityId, userId },
     () => {
       return db
         .collection('usersCommunities')
@@ -1219,6 +1242,7 @@ type UserIdAndCommunityId = [?string, string];
 export const getUsersPermissionsInCommunities = async (input: Array<UserIdAndCommunityId>) => {
   return dbUtil.tryCallAsync(
     "getUsersPermissionsInCommunities",
+    { input },
     () => {
       return db
         .collection('usersCommunities')
@@ -1267,6 +1291,7 @@ export const getUsersPermissionsInCommunities = async (input: Array<UserIdAndCom
 export const getReputationByUser = (userId: string): Promise<Number> => {
   return dbUtil.tryCallAsync(
     'getReputationByUser',
+    { userId },
     async () => {
       let ret = await db
         .collection('usersCommunities')
@@ -1301,9 +1326,9 @@ export const getReputationByUser = (userId: string): Promise<Number> => {
 //     );
 // };
 export const getUsersTotalReputation = async (userIds: Array<string>): Promise<Array<number>> => {
-  console.log("dbUtil", dbUtil);
   return dbUtil.tryCallAsync(
     "getUsersTotalReputation",
+    { userIds },
     async () => {
       let ret = await db
         .collection("usersCommunities")
@@ -1363,6 +1388,7 @@ export const setCommunityLastSeen = (
 ) => {
   return dbUtil.tryCallAsync(
     'setCommunityLastSeen',
+    { communityId, userId, lastSeen },
     () => {
       return dbUtil.updateMany(
         db,

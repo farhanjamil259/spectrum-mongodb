@@ -81,7 +81,9 @@ emailRouter.get('/unsubscribe', async (req, res) => {
 
         return toggleUserChannelNotifications(userId, dataId, false).then(() =>
           res.redirect(
-            `${rootRedirect}/${community.slug}/${channel.slug}?toastType=success&toastMessage=You will no longer receive new thread emails from this channel.`
+            `${rootRedirect}/${community.slug}/${
+              channel.slug
+            }?toastType=success&toastMessage=You will no longer receive new thread emails from this channel.`
           )
         );
       }
@@ -105,7 +107,9 @@ emailRouter.get('/unsubscribe', async (req, res) => {
         );
 
         return res.redirect(
-          `${rootRedirect}/${community.slug}?toastType=success&toastMessage=You will no longer receive new thread emails from this community.`
+          `${rootRedirect}/${
+            community.slug
+          }?toastType=success&toastMessage=You will no longer receive new thread emails from this community.`
         );
       }
       case 'muteThread':
@@ -185,18 +189,19 @@ emailRouter.get('/validate', (req, res) => {
   // validate a new administrator email address
   if (communityId) {
     try {
-      return updateCommunityAdministratorEmail(
-        communityId,
-        email,
-        userId
-      ).then(community =>
-        IS_PROD
-          ? res.redirect(
-              `https://spectrum.chat/${community.slug}/settings?toastType=success&toastMessage=Your email address has been validated!`
-            )
-          : res.redirect(
-              `http://localhost:3000/${community.slug}/settings?toastType=success&toastMessage=Your email address has been validated!`
-            )
+      return updateCommunityAdministratorEmail(communityId, email, userId).then(
+        community =>
+          IS_PROD
+            ? res.redirect(
+                `https://spectrum.chat/${
+                  community.slug
+                }/settings?toastType=success&toastMessage=Your email address has been validated!`
+              )
+            : res.redirect(
+                `http://localhost:3000/${
+                  community.slug
+                }/settings?toastType=success&toastMessage=Your email address has been validated!`
+              )
       );
     } catch (err) {
       console.error(err);

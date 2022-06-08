@@ -26,7 +26,9 @@ bufferNewMessageEmailQueue.process(async job => {
   const recipient = job.data.recipient;
   if (!recipient) return;
   debug(
-    `send notification email for ${threadsInScope.length} threads to @${recipient.username} (${recipient.email})`
+    `send notification email for ${threadsInScope.length} threads to @${
+      recipient.username
+    } (${recipient.email})`
   );
 
   const shouldGetEmail = await getEmailStatus(
@@ -158,7 +160,9 @@ const bufferMessageNotificationEmail = async (
   notification: DBNotification
 ) => {
   debug(
-    `send message notification email to ${recipient.email} for thread#${thread.id}`
+    `send message notification email to ${recipient.email} for thread#${
+      thread.id
+    }`
   );
   let job = await bufferNewMessageEmailQueue.getJob(recipient.email);
   // Try to remove the job if it exists. This fails sometimes due to a
@@ -182,7 +186,9 @@ const bufferMessageNotificationEmail = async (
   }
   if (!job) {
     debug(
-      `creating new timeout for ${recipient.email}, sending email after ${BUFFER}ms`
+      `creating new timeout for ${
+        recipient.email
+      }, sending email after ${BUFFER}ms`
     );
     return bufferNewMessageEmailQueue.add(
       {
@@ -206,7 +212,9 @@ const bufferMessageNotificationEmail = async (
     // keep coming send an email now to avoid not sending a notification for hours
     if (timeout.firstTimeout < Date.now() - MAX_WAIT) {
       debug(
-        `force send email to ${recipient.email} because it's been over ${MAX_WAIT}ms without an email`
+        `force send email to ${
+          recipient.email
+        } because it's been over ${MAX_WAIT}ms without an email`
       );
       return bufferNewMessageEmailQueue.add(timeout, {
         delay: 0,
@@ -214,7 +222,9 @@ const bufferMessageNotificationEmail = async (
       });
     } else {
       debug(
-        `refresh  ${BUFFER}ms timeout for ${recipient.email} with new thread#${thread.id}`
+        `refresh  ${BUFFER}ms timeout for ${recipient.email} with new thread#${
+          thread.id
+        }`
       );
       return bufferNewMessageEmailQueue.add(timeout, {
         delay: BUFFER,

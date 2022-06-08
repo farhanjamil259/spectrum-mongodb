@@ -154,4 +154,7 @@ const EditingChatInput = (props: Props) => {
   );
 };
 
-export default compose(connect(), editMessageMutation)(EditingChatInput);
+export default compose(
+  connect(),
+  editMessageMutation
+)(EditingChatInput);

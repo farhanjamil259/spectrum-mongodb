@@ -14,10 +14,16 @@ const dbUtil = require('shared/dbUtil');
 const channelsByCommunitiesQuery = (...communityIds) => {
   return dbUtil.tryCallAsync(
     'channelsByCommunitiesQuery',
+    { communityIds },
     () => {
       return db
         .collection('channels')
-        .find({ communityId: { $in: communityIds, deletedAt: null } })
+        .find({
+          communityId: {
+            $in: communityIds,
+          },
+          deletedAt: null,
+        })
         .toArray();
     },
     []
@@ -33,10 +39,14 @@ const channelsByCommunitiesQuery = (...communityIds) => {
 const channelsByIdsQuery = (...channelIds) => {
   return dbUtil.tryCallAsync(
     'channelsByIdsQuery',
+    { channelIds },
     () => {
       return db
         .collection('channels')
-        .find({ id: { $in: channelIds, deletedAt: null } })
+        .find({
+          id: { $in: channelIds },
+          deletedAt: null,
+        })
         .toArray();
     },
     []
@@ -52,6 +62,7 @@ const channelsByIdsQuery = (...channelIds) => {
 const threadsByChannelsQuery = (...channelIds) => {
   return dbUtil.tryCallAsync(
     'threadsByChannelsQuery',
+    { channelIds },
     async () => {
       let ret = await channelsByIdsQuery(...channelIds);
       ret = await dbUtil.eqJoin(db, ret, 'id', 'threads', 'channeId');
@@ -77,6 +88,7 @@ const threadsByChannelsQuery = (...channelIds) => {
 const membersByChannelsQuery = (...channelIds) => {
   return dbUtil.tryCallAsyc(
     'membersByChannelsQuery',
+    { channelIds },
     async () => {
       let ret = await channelsByIdsQuery(channelIds);
       ret = await dbUtil.eqJoin(
@@ -131,6 +143,7 @@ const getChannelsByCommunity = (communityId: string): Promise<Array<DBChannel>> 
 const getPublicChannelsByCommunity = (communityId: string): Promise<Array<string>> => {  
   return dbUtil.tryCallAsync(
     "getPublicChannelsByCommunity",
+    { communityId },
     async () => {
       return (await channelsByCommunitiesQuery(communityId))
         .filter(channel => {
@@ -169,6 +182,7 @@ const getPublicChannelsByCommunity = (communityId: string): Promise<Array<string
 const getChannelsByUserAndCommunity = (communityId: string, userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getChannelsByUserAndCommunity",
+    { communityId, userId },
     async () => {
       const channels = await channelsByCommunitiesQuery(communityId);
       const unarchived = channels.filter(channel => !channel.archivedAt)
@@ -207,6 +221,7 @@ const getChannelsByUserAndCommunity = (communityId: string, userId: string): Pro
 const getChannelsByUser = (userId: string): Promise<Array<DBChannel>> => {
   return dbUtil.tryCallAsync(
     'getChannelsByUser',
+    { userId },
     async () => {
       let ret = await db
         .collection('usersChannels')
@@ -261,6 +276,7 @@ const getChannelBySlug = (
 ): Promise<?DBChannel> => {
   return dbUtil.tryCallAsync(
     'getChannelBySlug',
+    { channelSlug, communitySlug },
     async () => {
       const [communityId] = await db
         .collection('communities')
@@ -298,6 +314,7 @@ const getChannelBySlug = (
 const getChannelById = (id: string) => {
   return dbUtil.tryCallAsync(
     'getChannelById',
+    { id },
     async () => {
       return (await channelsByIdsQuery(id))[0] || null;
     },
@@ -339,6 +356,7 @@ type GroupedCount = {
 const getChannelsThreadCounts = (channelIds: Array<string>): Promise<Array<GroupedCount>> => {
   return dbUtil.tryCallAsync(
     "getChannelsThreadCounts",
+    { channelIds },
     async () => {
       let ret = await threadsByChannelsQuery(...channelIds);
       ret = dbUtil.group(ret, "channelId");
@@ -360,6 +378,7 @@ const getChannelsThreadCounts = (channelIds: Array<string>): Promise<Array<Group
 const getChannelsMemberCounts = (channelIds: Array<string>): Promise<Array<GroupedCount>> => {
   return dbUtil.tryCallAsync(
     "getChannelsMemberCounts",
+    { channelIds },
     async () => {
       let ret = await membersByChannelsQuery(...channelIds);
       ret = dbUtil.group(members, "channelId");
@@ -425,6 +444,7 @@ export type EditChannelInput = {
 const createChannel = ({ input }: CreateChannelInput, userId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "createChannel",
+    { input, userId },
     () => {
       const { communityId, name, slug, description, isPrivate, isDefault } = input;
 
@@ -528,6 +548,7 @@ const createGeneralChannel = (communityId: string, userId: string): Promise<DBCh
 const editChannel = ({ input }: EditChannelInput): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "editChannel",
+    { input },
     async () => {
       const { name, slug, description, isPrivate, channelId } = input;
   
@@ -552,6 +573,9 @@ const editChannel = ({ input }: EditChannelInput): Promise<DBChannel> => {
           $set: dbUtil.flattenSafe({
             ...channelRecord
           })
+      })
+      .then(result => {
+        return result[0]
       })
     },
     null
@@ -579,6 +603,7 @@ const editChannel = ({ input }: EditChannelInput): Promise<DBChannel> => {
 const deleteChannel = (channelId: string, userId: string): Promise<Boolean> => {
   return dbUtil.tryCallAsync(
     'deleteChannel',
+    { channelId, userId },
     () => {
       return dbUtil.updateOne(
         db,
@@ -613,6 +638,7 @@ const deleteChannel = (channelId: string, userId: string): Promise<Boolean> => {
 const archiveChannel = (channelId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "archiveChannel",
+    { channelId },
     () => {
       return dbUtil.updateOne(db, 
         "channels", 
@@ -623,6 +649,9 @@ const archiveChannel = (channelId: string): Promise<DBChannel> => {
           $set: { 
             archivedAt: new Date() 
           }
+        })
+        .then(result => {
+          return result[0];
         });
     },
     null
@@ -643,6 +672,7 @@ const archiveChannel = (channelId: string): Promise<DBChannel> => {
 const restoreChannel = (channelId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "restoreChannel",
+    { channelId },
     () => {
       return dbUtil.updateOne(db, 
         "channels",
@@ -653,6 +683,9 @@ const restoreChannel = (channelId: string): Promise<DBChannel> => {
           $unset: { 
             archivedAt: "" 
           }
+        })
+        .then(result => {
+          return result[0];
         });
     },
     null
@@ -679,6 +712,7 @@ const restoreChannel = (channelId: string): Promise<DBChannel> => {
 const archiveAllPrivateChannels = (communityId: string) => {
   return dbUtil.tryCallAsync(
     "archiveAllPrivateChannels",
+    { communityId },
     async () => {
       const channels = await db
         .collection('channels')
@@ -720,19 +754,24 @@ const archiveAllPrivateChannels = (communityId: string) => {
 const incrementMemberCount = (channelId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     'incrementMemberCount',
+    { channelId },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'channels',
-        {
-          id: channelId,
-        },
-        {
-          $inc: {
-            memberCount: 1,
+      return dbUtil
+        .updateOne(
+          db,
+          'channels',
+          {
+            id: channelId,
           },
-        }
-      );
+          {
+            $inc: {
+              memberCount: 1,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -758,19 +797,24 @@ const incrementMemberCount = (channelId: string): Promise<DBChannel> => {
 const decrementMemberCount = (channelId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     'decrementMemberCount',
+    { channelId },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'channels',
-        {
-          id: channelId,
-        },
-        {
-          $inc: {
-            memberCount: -1,
+      return dbUtil
+        .updateOne(
+          db,
+          'channels',
+          {
+            id: channelId,
           },
-        }
-      );
+          {
+            $inc: {
+              memberCount: -1,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -799,19 +843,24 @@ const setMemberCount = (
 ): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     'setMemberCount',
+    { channelId, value },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'channels',
-        {
-          id: channelId,
-        },
-        {
-          $set: {
-            memberCount: value,
+      return dbUtil
+        .updateOne(
+          db,
+          'channels',
+          {
+            id: channelId,
           },
-        }
-      );
+          {
+            $set: {
+              memberCount: value,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -850,6 +899,7 @@ const setMemberCount = (
 const getChannelsOnlineMemberCounts = (channelIds: Array<string>) => {
   return dbUtil.tryCallAsync(
     'getChannelsOnlineMemberCounts',
+    { channelIds },
     async () => {
       let ret = await db
         .collection('usersChannels')

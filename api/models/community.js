@@ -29,6 +29,7 @@ const dbUtil = require('shared/dbUtil');
 export const getCommunityById = (id: string): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     'getCommunityById',
+    { id },
     () => {
       return db.collection('communities').findOne({ id: id, deletedAt: null });
     },
@@ -49,6 +50,7 @@ export const getCommunities = (communityIds: Array<string>): Promise<Array<DBCom
   return dbUtil
     .tryCallAsync(
       "getCommunities", 
+      { communityIds },
       () => {
         return db
           .collection('communities')
@@ -71,6 +73,7 @@ export const getCommunities = (communityIds: Array<string>): Promise<Array<DBCom
 export const getCommunitiesBySlug = (slugs: Array<string>): Promise<Array<DBCommunity>> => {
   return dbUtil.tryCallAsync(
     "getCommunitiesBySlug",
+    { slugs },
     () => {
       return db
         .collection('communities')
@@ -133,6 +136,7 @@ export const getCommunitiesByUser = (userId: string): Promise<Array<DBCommunity>
   return dbUtil
     .tryCallAsync(
       "getCommunitiesByUser",
+      { userId },
       async () => {
         let ret = await db
           .collection("usersCommunities")
@@ -271,6 +275,7 @@ export const getVisibleCommunitiesByUser = (evaluatingUserId: string, currentUse
 export const getPublicCommunitiesByUser = (userId: string) => {
   return dbUtil.tryCallAsync(
     'getPublicCommunitiesByUser',
+    { userId },
     async () => {
       let ret = await db
         .collection('usersCommunities')
@@ -306,6 +311,7 @@ export const getPublicCommunitiesByUser = (userId: string) => {
 export const getCommunitiesChannelCounts = (communityIds: Array<string>) => {
   return dbUtil.tryCallAsync(
     'getCommunitiesChannelCounts',
+    { communityIds },
     async () => {
       let ret = await db
         .collection('channels')
@@ -333,6 +339,7 @@ export const getCommunitiesChannelCounts = (communityIds: Array<string>) => {
 export const getCommunitiesMemberCounts = (communityIds: Array<string>) => {
   return dbUtil.tryCallAsync(
     'getCommunitiesMemberCounts',
+    { communityIds },
     async () => {
       let ret = await db
         .collection('usersCommunities')
@@ -382,6 +389,7 @@ export const getCommunitiesOnlineMemberCounts = (
 ) => {
   return dbUtil.tryCallAsync(
     'getCommunitiesOnlineMemberCounts',
+    { communityIds },
     async () => {
       let ret = await db
         .collection('usersCommunities')
@@ -413,6 +421,7 @@ export const getCommunitiesOnlineMemberCounts = (
 export const setCommunityLastActive = (id: string, lastActive: Date) => {
   return dbUtil.tryCallAsync(
     'setCommunityLastActive',
+    { id, lastActive },
     () => {
       return dbUtil.updateOne(
         db,
@@ -646,11 +655,13 @@ export type EditCommunityInput = {
 export const createCommunity = ({ input }: CreateCommunityInput, user: DBUser): any => {
   return dbUtil.tryCallAsync(
     "createCommunity",
+    { input, user },
     () => {
       const { name, slug, description, website, file, coverFile, isPrivate } = input
 
       return dbUtil
         .insert(
+          db,
           'communities',
           {
             createdAt: new Date(),
@@ -687,16 +698,22 @@ export const createCommunity = ({ input }: CreateCommunityInput, user: DBUser): 
             const { coverPhoto, profilePhoto } = getRandomDefaultPhoto();
             return dbUtil
               .updateOne(
+                db,
                 'communities',
                 { 
                   id: community.id 
                 },
                 { 
-                  ...community, 
-                  profilePhoto, 
-                  coverPhoto 
+                  $set: dbUtil.flattenSafe({
+                    ...community, 
+                    profilePhoto, 
+                    coverPhoto 
+                  })
                 },
               )
+              .then(result => {
+                return result[0];
+              })
           }
 
           if (file || coverFile) {
@@ -719,6 +736,9 @@ export const createCommunity = ({ input }: CreateCommunityInput, user: DBUser): 
                           })
                         },
                       )
+                      .then(result => {
+                        return result[0];
+                      })
                   );
                 })
                 .catch(err => {
@@ -744,6 +764,9 @@ export const createCommunity = ({ input }: CreateCommunityInput, user: DBUser): 
                           })
                         },
                       )
+                      .then(result => {
+                        return result[0];
+                      })
                   );
                 })
                 .catch(err => {
@@ -780,6 +803,9 @@ export const createCommunity = ({ input }: CreateCommunityInput, user: DBUser): 
                         profilePhoto,
                       },
                     )
+                    .then(result => {
+                      return result[0];
+                    })
                 );
               });
             }
@@ -923,6 +949,7 @@ export const editCommunity = ({ input }: EditCommunityInput, userId: string): Pr
 export const toggleCommunityRedirect = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'toggleCommunityRedirect',
+    { communityId },
     async () => {
       const community = await db
         .collection('communities')
@@ -973,22 +1000,29 @@ export const toggleCommunityRedirect = (communityId: string) => {
 export const toggleCommunityNoindex = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'toggleCommunityNoindex',
+    { communityId },
     async () => {
       const community = await db
         .table('communities')
         .findOne({ id: communityId });
       if (!community) return null;
 
-      return dbUtil.updateOne(
-        db,
-        'communities',
-        {
-          id: communityId,
-        },
-        {
-          noindex: !community.noindex,
-        }
-      );
+      return dbUtil
+        .updateOne(
+          db,
+          'communities',
+          {
+            id: communityId,
+          },
+          {
+            noindex: !community.noindex,
+          }
+        )
+        .then(result => {
+          if (!Array.isArray(result.changes) || result.changes.length === 0)
+            return getCommunityById(communityId);
+          return result[0];
+        });
     },
     null
   );
@@ -1021,17 +1055,22 @@ export const setCommunityWatercoolerId = (
 ) => {
   return dbUtil.tryCallAsync(
     'setCommunityWatercoolerId',
+    { communityId, threadId },
     () => {
-      return db.collection('communities').findOneAndUpdate(
-        { id: communityId },
-        {
-          watercoolerId: threadId,
-        },
-        {
-          returnDocument: 'after',
-          returnNewDocument: true,
-        }
-      );
+      return dbUtil
+        .updateOne(
+          db,
+          'communities',
+          { id: communityId },
+          {
+            $set: {
+              watercoolerId: threadId,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -1201,6 +1240,7 @@ export const getRecentCommunities = (): Array<DBCommunity> => {
 export const getThreadCount = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'getThreadCount',
+    { communityId },
     () => {
       return db
         .collection('threads')
@@ -1251,6 +1291,7 @@ export const getCommunityGrowth = (
 ) => {
   return dbUtil.tryCallAsync(
     'getCommunityGrowth',
+    { table, range, field, communityId, filter },
     async () => {
       const { current, previous } = parseRange(range);
       const currentPeriodCount = await db.collection(table).countDocuments({
@@ -1370,6 +1411,7 @@ export const updateCommunityAdministratorEmail = (communityId: string, email: st
 export const resetCommunityAdministratorEmail = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'resetCommunityAdministratorEmail',
+    { communityId },
     () => {
       return db.collection('communities').updateOne(
         {
@@ -1412,19 +1454,24 @@ export const incrementMemberCount = (
 ): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     'incrementMemberCount',
+    { communityId },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'communities',
-        {
-          id: communityId,
-        },
-        {
-          $inc: {
-            memberCount: 1,
+      return dbUtil
+        .updateOne(
+          db,
+          'communities',
+          {
+            id: communityId,
           },
-        }
-      );
+          {
+            $inc: {
+              memberCount: 1,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -1453,19 +1500,24 @@ export const decrementMemberCount = (
 ): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     'decrementMemberCount',
+    { communityId },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'communities',
-        {
-          id: communityId,
-        },
-        {
-          $sub: {
-            memberCount: 1,
+      return dbUtil
+        .updateOne(
+          db,
+          'communities',
+          {
+            id: communityId,
           },
-        }
-      );
+          {
+            $sub: {
+              memberCount: 1,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -1493,31 +1545,45 @@ export const setMemberCount = (
 ): Promise<DBCommunity> => {
   return dbUtil.tryCallAsync(
     'setMemberCount',
+    { communityId, value },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'communities',
-        {
-          id: communityId,
-        },
-        {
-          $set: {
-            memberCount: value,
+      return dbUtil
+        .updateOne(
+          db,
+          'communities',
+          {
+            id: communityId,
           },
-        }
-      );
+          {
+            $set: {
+              memberCount: value,
+            },
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
 };
 
-const getUpdatedCommunitiesChangefeed = () =>
-  db
-    .table('communities')
-    .changes({
-      includeInitial: false,
-    })('new_val')
-    .run();
+// const getUpdatedCommunitiesChangefeed = () =>
+//   db
+//     .table('communities')
+//     .changes({
+//       includeInitial: false,
+//     })('new_val')
+//     .run();
+const getUpdatedCommunitiesChangefeed = () => {};
+
+// export const listenToUpdatedCommunities = (cb: Function): Function => {
+//   return createChangefeed(
+//     getUpdatedCommunitiesChangefeed,
+//     cb,
+//     'listenToUpdatedCommunities'
+//   );
+// };
 
 export const listenToUpdatedCommunities = (cb: Function): Function => {
   return createChangefeed(

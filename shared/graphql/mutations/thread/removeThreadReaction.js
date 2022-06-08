@@ -14,9 +14,9 @@ export type RemoveThreadReactionType = {
 };
 
 export type RemoveThreadReactionProps = {
-  removeThreadReaction: ({
-    input: { threadId: string },
-  }) => Promise<RemoveThreadReactionType>,
+  removeThreadReaction: ({ input: { threadId: string } }) => Promise<
+    RemoveThreadReactionType
+  >,
 };
 
 export const removeThreadReactionQuery = gql`

@@ -37,6 +37,7 @@ const saveUserCommunityPermissions = (
 ): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'saveUserCommunityPermissions',
+    { permissions, userId, communityId },
     () => {
       return dbUtil
         .updateMany(

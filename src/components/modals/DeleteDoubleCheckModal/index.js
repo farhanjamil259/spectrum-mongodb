@@ -193,7 +193,9 @@ class DeleteDoubleCheckModal extends React.Component<Props, State> {
             dispatch(
               addToastWithTimeout(
                 'error',
-                `Sorry, we weren't able to delete this community. ${err.message}`
+                `Sorry, we weren't able to delete this community. ${
+                  err.message
+                }`
               )
             );
             this.setState({

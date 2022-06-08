@@ -28,4 +28,7 @@ const NoUsernameHandler = (props: Props) => {
   return null;
 };
 
-export default compose(getCurrentUser, withRouter)(NoUsernameHandler);
+export default compose(
+  getCurrentUser,
+  withRouter
+)(NoUsernameHandler);

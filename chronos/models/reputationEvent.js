@@ -32,6 +32,7 @@ const dbUtil = require('shared/dbUtil');
 export const getReputationChangeInTimeframe = (userId: string, timeframe: string): Promise<number> => {
   return dbUtil.tryCallAsync(
     "getReputationChangeInTimeframe",
+    { userId, timeframe },
     async () => {
       let range;
       switch (timeframe) {
@@ -81,6 +82,7 @@ export const getReputationChangeInTimeframe = (userId: string, timeframe: string
 export const getTotalReputation = async (userId: string): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getTotalReputation',
+    { userId },
     async () => {
       let ret = await db
         .collection('reputationEvents')

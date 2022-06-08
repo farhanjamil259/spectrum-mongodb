@@ -158,7 +158,10 @@ const renderer = (req: express$Request, res: express$Response) => {
         renderToNodeStream(frontend)
       );
 
-      stream.pipe(res, { end: false });
+      stream.pipe(
+        res,
+        { end: false }
+      );
 
       const bundles = getBundles(stats, modules)
         // Create <script defer> tags from bundle objects

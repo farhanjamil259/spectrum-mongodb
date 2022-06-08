@@ -12,6 +12,7 @@ const dbUtil = require('shared/dbUtil');
 export const getMessageById = (id: string): Promise<DBMessage> => {
   return dbUtil.tryCallAsync(
     'getMessageById',
+    { id },
     () => {
       return db.collection('messages').findOne({ id: id });
     },

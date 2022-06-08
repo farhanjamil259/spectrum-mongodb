@@ -18,6 +18,7 @@ const dbUtil = require('shared/dbUtil');
 export const getUserIdsForDigest = (timeframe: Timeframe, after: number, limit: number): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUserIdsForDigest",
+    { timeframe },
     () => {
       let range = timeframe === 'daily' ? 'dailyDigest' : 'weeklyDigest';
 

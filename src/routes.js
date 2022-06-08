@@ -493,4 +493,7 @@ class Routes extends React.Component<Props, State> {
   }
 }
 
-export default compose(withCurrentUser, withRouter)(Routes);
+export default compose(
+  withCurrentUser,
+  withRouter
+)(Routes);

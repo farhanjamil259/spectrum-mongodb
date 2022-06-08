@@ -8,6 +8,13 @@ import dbUtil from 'shared/dbUtil';
 //   tags: (thread: ?DBThread) => (thread ? [thread.id] : []),
 // }));
 export const getThreadById = createReadQuery((id: string) => ({
-  query: db.collection('threads').findOne({ id: id }),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getThreadById',
+    { id },
+    () => {
+      return db.collection('threads').findOne({ id: id });
+    },
+    null
+  ),
   tags: (thread: ?DBThread) => (thread ? [thread.id] : []),
 }));

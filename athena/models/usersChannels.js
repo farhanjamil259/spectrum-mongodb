@@ -64,6 +64,7 @@ export const getUserPermissionsInChannel = (
 ): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'getUserPermissionsInChannel',
+    { userId, channelId },
     async () => {
       let ret = await db
         .collection('usersChannels')
@@ -103,6 +104,7 @@ export const getOwnersInChannel = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getOwnersInChannel',
+    { channelId },
     async () => {
       return db
         .table('usersChannels')
@@ -130,6 +132,7 @@ export const getModeratorsInChannel = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getModeratorsInChannel',
+    { channelId },
     () => {
       return db
         .collection('usersChannels')

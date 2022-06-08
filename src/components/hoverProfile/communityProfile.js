@@ -94,4 +94,8 @@ class HoverProfile extends Component<ProfileProps> {
   }
 }
 
-export default compose(withCurrentUser, withRouter, connect())(HoverProfile);
+export default compose(
+  withCurrentUser,
+  withRouter,
+  connect()
+)(HoverProfile);

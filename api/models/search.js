@@ -51,6 +51,7 @@ export const getPublicChannelIdsInCommunity = (communityId: string): Promise<Arr
 export const getPrivateChannelIdsInCommunity = (communityId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getPrivateChannelIdsInCommunity",
+    { communityId },
     async () => {
       let ret = await db
         .collection('channels')
@@ -80,6 +81,7 @@ export const getPrivateChannelIdsInCommunity = (communityId: string): Promise<Ar
 export const getPublicChannelIdsForUsersThreads = (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getPublicChannelIdsForUsersThreads",
+    { userId },
     async () => {
       let ret = await db
         .collection('threads')
@@ -117,6 +119,7 @@ export const getPublicCommunityIdsForUsersThreads = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getPublicCommunityIdsForUsersThreads',
+    { userId },
     async () => {
       let ret = await db
         .collection('threads')
@@ -151,6 +154,7 @@ export const getPublicCommunityIdsForUsersThreads = (
 export const getPrivateChannelIdsForUsersThreads = (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getPrivateChannelIdsForUsersThreads",
+    { userId },
     async () => {
       let ret = await db
         .collection('threads')
@@ -188,6 +192,7 @@ export const getPrivateCommunityIdsForUsersThreads = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getPrivateCommunityIdsForUsersThreads',
+    { userId },
     async () => {
       let ret = await db
         .collection('threads')
@@ -221,6 +226,7 @@ export const getPrivateCommunityIdsForUsersThreads = (
 export const getUsersJoinedChannels = (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUsersJoinedChannels",
+    { userId },
     async () => {
       let ret = await db
         .collection('usersChannels')
@@ -254,6 +260,7 @@ export const getUsersJoinedChannels = (userId: string): Promise<Array<string>> =
 export const getUsersJoinedCommunities = async (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUsersJoinedCommunities",
+    { userId },
     async () => {
       let ret = await db
         .collection('usersCommunities')
@@ -288,6 +295,7 @@ export const getUsersJoinedCommunities = async (userId: string): Promise<Array<s
 export const getUsersJoinedPrivateChannelIds = async (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUsersJoinedPrivateChannelIds",
+    { userId },
     async () => {
       let ret = await db
         .collection('usersChannels')
@@ -323,6 +331,7 @@ export const getUsersJoinedPrivateChannelIds = async (userId: string): Promise<A
 export const getUsersJoinedPrivateCommunityIds = async (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUsersJoinedPrivateCommunityIds",
+    { userId },
     async () => {
       let ret = await db
         .collection('usersCommunities')

@@ -46,9 +46,11 @@ const dbUtil = require('shared/dbUtil');
 const createOwnerInChannel = (channelId: string, userId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "createOwnerInChannel",
+    { channelId, userId },
     () => {
       return dbUtil
         .insert(
+          db,
           'usersChannels',
           {
             channelId,
@@ -65,7 +67,7 @@ const createOwnerInChannel = (channelId: string, userId: string): Promise<DBChan
         .then(async result => {
           const join = result[0];
           await incrementMemberCount(channelId)
-          return db.table('channels').findOne({id: join.channelId});
+          return db.collection('channels').findOne({id: join.channelId});
         });
     },
     null
@@ -122,6 +124,7 @@ const createOwnerInChannel = (channelId: string, userId: string): Promise<DBChan
 const createMemberInChannel = (channelId: string, userId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "createMemberInChannel",
+    { channelId, userId },
     () => {
       return db
         .collection('usersChannels')
@@ -202,6 +205,7 @@ const createMemberInChannel = (channelId: string, userId: string): Promise<DBCha
 const removeMemberInChannel = async (channelId: string, userId: string): Promise<?DBChannel> => {
   return dbUtil.tryCallAsync(
     "removeMemberInChannel",
+    { channelId, userId },
     () => {
       return db
         .updateMany(
@@ -253,6 +257,7 @@ const removeMemberInChannel = async (channelId: string, userId: string): Promise
 const unblockMemberInChannel = (channelId: string, userId: string): Promise<?DBChannel> => {
   return dbUtil.tryCallAsync(
     "unblockMemberInChannel",
+    { channelId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -294,6 +299,7 @@ const unblockMemberInChannel = (channelId: string, userId: string): Promise<?DBC
 const removeMembersInChannel = async (channelId: string): Promise<Array<?DBUsersChannels>> => {
   return dbUtil.tryCallAsync(
     "removeMembersInChannel",
+    { channelId },
     async () => {
       await setMemberCount(channelId, 0)
 
@@ -361,6 +367,7 @@ const removeMembersInChannel = async (channelId: string): Promise<Array<?DBUsers
 const createOrUpdatePendingUserInChannel = (channelId: string, userId: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "createOrUpdatePendingUserInChannel",
+    { channelId, userId },
     () => {
       return db
         .collection('usersChannels')
@@ -436,6 +443,7 @@ const removePendingUsersInChannel = async (
 ): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     'removePendingUsersInChannel',
+    { channelId },
     () => {
       return dbUtil
         .updateMany(
@@ -486,6 +494,7 @@ const removePendingUsersInChannel = async (
 const blockUserInChannel = async (channelId: string, userId: string): Promise<DBUsersChannels> => {
   return dbUtil.tryCallAsync(
     "blockUserInChannel",
+    { channelId, userId },
     async () => {
       await decrementMemberCount(channelId)
 
@@ -537,6 +546,7 @@ const blockUserInChannel = async (channelId: string, userId: string): Promise<DB
 const approvePendingUserInChannel = async (channelId: string, userId: string): Promise<DBUsersChannels> => {
   return dbUtil.tryCallAsync(
     "approvePendingUserInChannel",
+    { channelId, userId },
     async () => {
       await incrementMemberCount(channelId)
 
@@ -605,6 +615,7 @@ const approvePendingUserInChannel = async (channelId: string, userId: string): P
 const approvePendingUsersInChannel = async (channelId: string): Promise<DBUsersChannels> => {
   return dbUtil.tryCallAsync(
     "approvePendingUsersInChannel",
+    { channelId },
     async () => {
       const currentCount = await db
         .collection('usersChannels')
@@ -670,6 +681,7 @@ const approvePendingUsersInChannel = async (channelId: string): Promise<DBUsersC
 const approveBlockedUserInChannel = async (channelId: string, userId: string): Promise<DBUsersChannels> => {
   return dbUtil.tryCallAsync(
     "approveBlockedUserInChannel",
+    { channelId, userId },
     async () => {
       await incrementMemberCount(channelId)
 
@@ -713,6 +725,7 @@ const removeModeratorInChannel = (
 ): Promise<DBUsersChannels> => {
   return dbUtil.tryCallAsync(
     'removeModeratorInChannel',
+    { channelId, userId },
     () => {
       return dbUtil.updateMany(
         db,
@@ -776,6 +789,7 @@ const removeModeratorInChannel = (
 const createMemberInDefaultChannels = (communityId: string, userId: string): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "createMemberInDefaultChannels",
+    { communityId, userId },
     () => {
       // get the default channels for the community being joined
       const defaultChannels = db
@@ -856,6 +870,7 @@ const createMemberInDefaultChannels = (communityId: string, userId: string): Pro
 const toggleUserChannelNotifications = async (userId: string, channelId: string, value: boolean): Promise<?DBChannel> => {
   return dbUtil.tryCallAsync(
     "toggleUserChannelNotifications",
+    { userId, channelId, value },
     async () => {
       const permissions = await db
         .collection('usersChannels')
@@ -924,6 +939,7 @@ const toggleUserChannelNotifications = async (userId: string, channelId: string,
 const removeUsersChannelMemberships = async (userId: string) => {
   return dbUtil.tryCallAsync(
     'removeUsersChannelMemberships',
+    { userId },
     async () => {
       const usersChannels = await db
         .collection('usersChannels')
@@ -983,6 +999,7 @@ type Options = { first: number, after: number };
 const getMembersInChannel = (channelId: string, options: Options): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getMembersInChannel",
+    { channelId, options },
     () => {
       const { first, after } = options
 
@@ -1022,6 +1039,7 @@ const getMembersInChannel = (channelId: string, options: Options): Promise<Array
 const getPendingUsersInChannel = (channelId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getPendingUsersInChannel",
+    { channelId },
     () => {
       return (
         db
@@ -1051,6 +1069,7 @@ const getPendingUsersInChannel = (channelId: string): Promise<Array<string>> => 
 const getPendingUsersInChannels = async (channelIds: Array<string>) => {
   return dbUtil.tryCallAsync(
     'getPendingUsersInChannels',
+    { channelIds },
     () => {
       return db
         .collection('usersChannels')
@@ -1082,6 +1101,7 @@ const getPendingUsersInChannels = async (channelIds: Array<string>) => {
 const getBlockedUsersInChannel = (channelId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getBlockedUsersInChannel",
+    { channelId },
     () => {
       return (
         db
@@ -1114,6 +1134,7 @@ const getBlockedUsersInChannel = (channelId: string): Promise<Array<string>> => 
 const getModeratorsInChannel = (channelId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getModeratorsInChannel',
+    { channelId },
     () => {
       return (
         db
@@ -1146,6 +1167,7 @@ const getModeratorsInChannel = (channelId: string): Promise<Array<string>> => {
 const getOwnersInChannel = (channelId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getOwnersInChannel',
+    { channelId },
     () => {
       return (
         db
@@ -1189,6 +1211,7 @@ const DEFAULT_USER_CHANNEL_PERMISSIONS = {
 const getUserPermissionsInChannel = (channelId: string, userId: string): Promise<DBUsersChannels> => {
   return dbUtil.tryCallAsync(
     "getUserPermissionsInChannel",
+    { channelId, userId },
     () => {
       return db
         .collection('usersChannels')
@@ -1242,6 +1265,7 @@ type UserIdAndChannelId = [?string, string];
 const getUsersPermissionsInChannels = async (input: Array<UserIdAndChannelId>): Promise<Array<DBUsersChannels>> => {
   return dbUtil.tryCallAsync(
     "getUsersPermissionsInChannels",
+    { input },
     () => {
       return db
         .collection('usersChannels')
@@ -1288,13 +1312,17 @@ const getUsersPermissionsInChannels = async (input: Array<UserIdAndChannelId>): 
 const getUserUsersChannels = (userId: string) => {
   return dbUtil.tryCallAsync(
     'getUserUsersChannels',
+    { userId },
     () => {
-      return db.collection('usersChannels').find({
-        userId: userId,
-        $or: [{ isMember: true }, { isModerator: true }, { isOwner: true }],
-      });
+      return db
+        .collection('usersChannels')
+        .find({
+          userId: userId,
+          $or: [{ isMember: true }, { isModerator: true }, { isOwner: true }],
+        })
+        .toArray();
     },
-    null
+    []
   );
 };
 
@@ -1310,6 +1338,7 @@ const getUserUsersChannels = (userId: string) => {
 const getUserChannelIds = (userId: string) => {
   return dbUtil.tryCallAsync(
     'getUserChannelIds',
+    { userId },
     () => {
       return db
         .collection('usersChannels')

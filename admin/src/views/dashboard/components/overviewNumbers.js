@@ -70,7 +70,7 @@ const OverviewNumbers = ({ data }) => {
     return (
       <Growth>
         <Row>
-          <Neutral>{Math.round((count / usersGrowth.count) * 100)}%</Neutral>
+          <Neutral>{Math.round(count / usersGrowth.count * 100)}%</Neutral>
           <RangeLabel>
             {range} ({count.toLocaleString()})
           </RangeLabel>
@@ -342,9 +342,8 @@ const OverviewNumbers = ({ data }) => {
   );
 };
 
-const OverviewWithData = compose(
-  overviewQuery,
-  displayLoadingState
-)(OverviewNumbers);
+const OverviewWithData = compose(overviewQuery, displayLoadingState)(
+  OverviewNumbers
+);
 
 export default OverviewWithData;

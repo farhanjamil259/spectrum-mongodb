@@ -12,6 +12,7 @@ const dbUtil = require('shared/dbUtil');
 export const getThreadById = (id: string): Promise<DBThread> => {
   return dbUtil.tryCallAsync(
     'getThreadById',
+    { id },
     () => {
       return db.collection('threads').findOne({ id: id });
     },

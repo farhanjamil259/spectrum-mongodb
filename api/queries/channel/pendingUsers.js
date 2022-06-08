@@ -9,7 +9,7 @@ import {
 
 export default requireAuth(
   async ({ id }: DBChannel, _: any, { user, loaders }: GraphQLContext) => {
-    if (!(await canModerateChannel(user.id, id, loaders))) {
+    if (!await canModerateChannel(user.id, id, loaders)) {
       return new UserError('You don’t have permission to manage this channel');
     }
 

@@ -35,7 +35,7 @@ export default requireAuth(async (_: any, args: Input, ctx: GraphQLContext) => {
     return new UserError("You don't have permission to post in that channel.");
   }
 
-  if (thread.creatorId !== user.id && !isOwner && !isModerator) {
+  if (thread.creatorId !== user.id && (!isOwner && !isModerator)) {
     return new UserError(
       'You have to be a moderator or owner of the community to move a thread.'
     );

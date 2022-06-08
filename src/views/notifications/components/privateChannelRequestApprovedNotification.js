@@ -43,7 +43,9 @@ export class PrivateChannelRequestApproved extends React.Component<Props> {
         isSeen={notification.isSeen}
       >
         <CardLink
-          to={`/${notification.context.payload.slug}/${notification.entities[0].payload.slug}`}
+          to={`/${notification.context.payload.slug}/${
+            notification.entities[0].payload.slug
+          }`}
         />
         <CardContent>
           <ApprovedContext>

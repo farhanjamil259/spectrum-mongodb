@@ -124,6 +124,7 @@ export const createSlackImportRecord = (input: CreateSlackImportType) => {
 export const getSlackImport = (communityId: string) => {
   return dbUtil.tryCallAsync(
     'getSlackImport',
+    { communityId },
     () => {
       return db
         .collection('slackImports')

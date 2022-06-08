@@ -33,9 +33,11 @@ const dbUtil = require('shared/dbUtil');
 const createMemberInDirectMessageThread = (threadId: string, userId: string, setActive: boolean): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "createMemberInDirectMessageThread",
+    { threadId, userId, setActive },
     () => {
       return dbUtil
         .insert(
+          db,
           'usersDirectMessageThreads',
           {
             threadId,
@@ -68,6 +70,7 @@ const createMemberInDirectMessageThread = (threadId: string, userId: string, set
 const removeMemberInDirectMessageThread = (threadId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "removeMemberInDirectMessageThread",
+    { threadId, userId },
     () => {
       return db
         .collection('usersDirectMessageThreads')
@@ -94,6 +97,7 @@ const removeMemberInDirectMessageThread = (threadId: string, userId: string): Pr
 const removeMembersInDirectMessageThread = (threadId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "removeMembersInDirectMessageThread",
+    { threadId },
     () => {
       return db
         .collection('usersDirectMessageThreads')
@@ -123,6 +127,7 @@ const removeMembersInDirectMessageThread = (threadId: string): Promise<Object> =
 const setUserLastSeenInDirectMessageThread = (threadId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "setUserLastSeenInDirectMessageThread",
+    { threadId, userId },
     () => {
       return dbUtil
         .updateMany(
@@ -161,6 +166,7 @@ const setUserLastSeenInDirectMessageThread = (threadId: string, userId: string):
 const updateDirectMessageThreadNotificationStatusForUser = (threadId: string, userId: string, val: boolean): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "updateDirectMessageThreadNotificationStatusForUser",
+    { threadId, userId, val },
     () => {
       return dbUtil
         .updateMany(
@@ -201,6 +207,7 @@ const updateDirectMessageThreadNotificationStatusForUser = (threadId: string, us
 const getMembersInDirectMessageThread = async (threadId: string): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "getMembersInDirectMessageThread",
+    { threadId },
     async () => {
       let ret = await db
         .collection('usersDirectMessageThreads')
@@ -230,6 +237,7 @@ const getMembersInDirectMessageThread = async (threadId: string): Promise<Array<
 const getMembersInDirectMessageThreads = async (threadIds: Array<string>): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "getMembersInDirectMessageThreads",
+    { threadIds },
     async () => {
       let ret = await db
         .collection('usersDirectMessageThreads')
@@ -260,6 +268,7 @@ const isMemberOfDirectMessageThread = async (
 ) => {
   return dbUtil.tryCallAsync(
     'isMemberOfDirectMessageThread',
+    { threadId, userId },
     async () => {
       let ret = await db
         .collection('usersDirectMessageThreads')
@@ -284,6 +293,7 @@ const isMemberOfDirectMessageThread = async (
 const getDirectMessageThreadRecords = (threadId: string) => {
   return dbUtil.tryCallAsync(
     'getDirectMessageThreadRecords',
+    { threadId },
     () => {
       return db
         .collection('usersDirectMessageThreads')

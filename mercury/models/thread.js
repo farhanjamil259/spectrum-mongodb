@@ -12,6 +12,7 @@ const dbUtil = require('shared/dbUtil');
 export const getThread = (id: string): Promise<DBThread> => {
   return dbUtil.tryCallAsync(
     'getThread',
+    { id },
     () => {
       return db.collection('threads').findOne({ id: id });
     },
@@ -31,6 +32,7 @@ export const getThread = (id: string): Promise<DBThread> => {
 export const getParticipantCount = (threadId: string): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getParticipantCount',
+    { threadId },
     () => {
       return db.collection('usersThreads').countDocuments({
         threadId: threadId,
@@ -72,6 +74,7 @@ export const getParticipantCountByTime = (
 ): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getParticipantCountByTime',
+    { threadId, range },
     async () => {
       let ret = await db
         .collection('messages')
@@ -121,6 +124,7 @@ export const getReactionCountByTime = (
 ): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getReactionCountByTime',
+    { threadId, range },
     async () => {
       let ret = await db
         .collection('threadReactions')
@@ -152,6 +156,7 @@ export const getReactionCountByTime = (
 export const getMessageCount = async (threadId: string): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getMessageCount',
+    { threadId },
     async () => {
       let ret = await db
         .collection('messages')
@@ -176,6 +181,7 @@ export const getMessageCount = async (threadId: string): Promise<number> => {
 export const getReactionCount = async (threadId: string): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getReactionCount',
+    { threadId },
     async () => {
       let ret = await db
         .collection('threadReactions')
@@ -192,7 +198,6 @@ export const getReactionCount = async (threadId: string): Promise<number> => {
 //   threadId: string,
 //   score: number
 // ): Promise<any> => {
-//   return dbUtil.tryCallAsync('', () => {}, null);
 
 //   return db
 //     .table('threads')
@@ -209,6 +214,7 @@ export const storeThreadScore = (
 ): Promise<any> => {
   return dbUtil.tryCallAsync(
     'storeThreadScore',
+    { threadId, score },
     () => {
       return dbUtil.updateOne(
         db,

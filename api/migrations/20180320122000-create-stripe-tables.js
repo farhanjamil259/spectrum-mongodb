@@ -4,7 +4,7 @@
 //   const createInvoicesTable = () =>
 //     r.tableCreate('stripeInvoices', { primaryKey: 'invoiceId' }).run(conn);
 
-const dbUtil = require('./dbUtil');
+const dbUtil = require("./dbUtil");
 
 //   return Promise.all([createCustomersTable(), createInvoicesTable()])
 //     .then(() =>
@@ -23,10 +23,9 @@ exports.up = function(r, conn) {
   const createInvoicesTable = () =>
     dbUtil.createCollections(r, 'stripeInvoices');
 
-  return Promise.all([
-    createCustomersTable(),
-    createInvoicesTable(),
-  ]).catch(err => console.log(err));
+  return Promise.all([createCustomersTable(), createInvoicesTable()]).catch(
+    err => console.log(err)
+  );
 };
 
 // exports.down = function(r, conn) {
@@ -37,6 +36,6 @@ exports.up = function(r, conn) {
 // };
 exports.down = function(r, conn) {
   return Promise.all([
-    dbUtil.dropCollections(r, 'stripeCustomers', 'stripeInvoices'),
+    dbUtil.dropCollections(r, 'stripeCustomers', "stripeInvoices" ),
   ]);
 };

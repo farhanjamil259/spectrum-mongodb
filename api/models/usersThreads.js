@@ -47,6 +47,7 @@ const dbUtil = require('shared/dbUtil');
 export const createParticipantInThread = (threadId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "createParticipantInThread",
+    { threadId, userId },
     () => {
       return db
         .collection('usersThreads')
@@ -106,6 +107,7 @@ export const createParticipantInThread = (threadId: string, userId: string): Pro
 export const deleteParticipantInThread = (threadId: string, userId: string): Promise<boolean> => {
   return dbUtil.tryCallAsync(
     "deleteParticipantInThread",
+    { threadId, userId },
     () => {
       return db
         .collection('usersThreads')
@@ -132,9 +134,11 @@ export const deleteParticipantInThread = (threadId: string, userId: string): Pro
 export const createNotifiedUserInThread = (threadId: string, userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "createNotifiedUserInThread",
+    { threadId, userId },
     () => {
       return dbUtil
         .insert(
+          db,
           'usersThreads',
           {
             createdAt: new Date(),
@@ -165,6 +169,7 @@ export const createNotifiedUserInThread = (threadId: string, userId: string): Pr
 export const getParticipantsInThread = async (threadId: string): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "getParticipantsInThread",
+    { threadId },
     async () => {
       let ret = await db
         .collection('usersThreads')
@@ -200,6 +205,7 @@ export const getParticipantsInThread = async (threadId: string): Promise<Array<O
 export const getParticipantsInThreads = (threadIds: Array<string>) => {
   return dbUtil.tryCallAsync(
     'getParticipantsInThreads',
+    { threadIds },
     async () => {
       let ret = await db
         .collection('usersThreads')
@@ -233,6 +239,7 @@ export const getParticipantsInThreads = (threadIds: Array<string>) => {
 export const getThreadNotificationStatusForUser = (threadId: string, userId: string): Promise<?DBUsersThreads> => {
   return dbUtil.tryCallAsync(
     "getThreadNotificationStatusForUser",
+    { threadId, userId },
     () => {
       return db
         .collection('usersThreads')
@@ -264,6 +271,7 @@ type UserIdAndThreadId = [string, string];
 export const getThreadsNotificationStatusForUsers = (input: Array<UserIdAndThreadId>) => {
   return dbUtil.tryCallAsync(
     "getThreadsNotificationStatusForUsers",
+    { input },
     () => {
       return db
         .collection('usersThreads')
@@ -320,6 +328,7 @@ export const getThreadsNotificationStatusForUsers = (input: Array<UserIdAndThrea
 export const updateThreadNotificationStatusForUser = (threadId: string, userId: string, value: boolean): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "updateThreadNotificationStatusForUser",
+    { threadId, userId, value },
     () => {
       return db
         .collection('usersThreads')
@@ -375,6 +384,7 @@ export const updateThreadNotificationStatusForUser = (threadId: string, userId: 
 export const turnOffAllThreadNotifications = (threadId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "turnOffAllThreadNotifications",
+    { threadId },
     () => {
       return dbUtil
         .updateMany(
@@ -405,6 +415,7 @@ export const turnOffAllThreadNotifications = (threadId: string): Promise<Object>
 export const disableAllThreadNotificationsForUser = (userId: string) => {
   return dbUtil.tryCallAsync(
     'disableAllThreadNotificationsForUser',
+    { userId },
     () => {
       return dbUtil.updateMany(
         db,

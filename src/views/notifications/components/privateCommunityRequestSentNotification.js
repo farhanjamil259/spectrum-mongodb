@@ -54,7 +54,9 @@ class PrivateCommunityRequestSentComponent extends React.Component<Props> {
         isSeen={notification.isSeen}
       >
         <Link
-          to={`/${notification.context.payload.slug}/settings/members?filter=pending`}
+          to={`/${
+            notification.context.payload.slug
+          }/settings/members?filter=pending`}
         >
           <CardContent>
             <RequestContext style={{ padding: '0 16px' }}>

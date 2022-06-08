@@ -37,6 +37,7 @@ export const saveReputationEvent = ({
 }): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'saveReputationEvent',
+    { userId, type, communityId, score },
     () => {
       return dbUtil.insert(db, 'reputationEvents', {
         timestamp: new Date(),

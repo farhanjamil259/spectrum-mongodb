@@ -30,6 +30,7 @@ const defaultSlackSettings = {
 export const getCommunitySettings = (id: string) => {
   return dbUtil.tryCallAsync(
     'getCommunitySettings',
+    { id },
     () => {
       return db
         .collection('communitySettings')
@@ -58,6 +59,7 @@ export const getCommunitySettings = (id: string) => {
 export const resetCommunitySlackSettings = (id: string) => {
   return dbUtil.tryCallAsync(
     'resetCommunitySlackSettings',
+    { id },
     () => {
       return dbUtil.updateMany(
         db,
@@ -92,6 +94,7 @@ export const resetCommunitySlackSettings = (id: string) => {
 export const updateSlackInvitesMemberCount = (id: string, count: number) => {
   return dbUtil.tryCallAsync(
     'updateSlackInvitesMemberCount',
+    { id, count },
     () => {
       return dbUtil.updateMany(
         db,
@@ -100,7 +103,7 @@ export const updateSlackInvitesMemberCount = (id: string, count: number) => {
           communityId: id,
         },
         {
-          $set: flatten({
+          $set: dbUtil.flattenSafe({
             slackSettings: {
               invitesMemberCount: count,
             },

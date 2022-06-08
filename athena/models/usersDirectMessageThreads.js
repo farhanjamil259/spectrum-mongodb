@@ -19,6 +19,7 @@ export const getDirectMessageThreadMembers = async (
 ): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     'getDirectMessageThreadMembers',
+    { id },
     async () => {
       let ret = await db
         .collection('usersDirectMessageThreads')

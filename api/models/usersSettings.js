@@ -43,9 +43,10 @@ export const createNewUsersSettings = (
 ): Promise<DBUserSettings> => {
   return dbUtil.tryCallAsync(
     'createNewUsersSettings',
+    { userId },
     () => {
       return dbUtil
-        .insert('usersSettings', {
+        .insert(db, 'usersSettings', {
           userId,
           notifications: {
             types: {
@@ -95,6 +96,7 @@ export const createNewUsersSettings = (
 export const getUsersSettings = (userId: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'getUsersSettings',
+    { userId },
     () => {
       return db
         .collection('usersSettings')
@@ -126,6 +128,7 @@ export const getUsersSettings = (userId: string): Promise<Object> => {
 export const updateUsersNotificationSettings = (userId: string, settings: object, type: string, method: string, enabled: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "updateUsersNotificationSettings",
+    { userId, settings, type, method, enabled },
     () => {
       return dbUtil
         .updateMany(
@@ -134,7 +137,7 @@ export const updateUsersNotificationSettings = (userId: string, settings: object
             userId: userId 
           },
           {
-            $set: flatten(settings)
+            $set: dbUtil.flattenSafe(settings)
           }
         )
     },
@@ -156,6 +159,7 @@ export const updateUsersNotificationSettings = (userId: string, settings: object
 export const unsubscribeUserFromEmailNotification = (userId: string, type: object): Promise<Object> => {
   return dbUtil.tryCallAsync(
     "unsubscribeUserFromEmailNotification",
+    { userId, type },
     () => {
       const obj = { notifications: { types: {} } };
       obj['notifications']['types'][type] = { email: false };
@@ -167,7 +171,7 @@ export const unsubscribeUserFromEmailNotification = (userId: string, type: objec
             userId: userId 
           }, 
           {
-            $set: flatten(obj)
+            $set: dbUtil.flattenSafe(obj)
           }
         )
     },
@@ -208,6 +212,7 @@ export const unsubscribeUserFromEmailNotification = (userId: string, type: objec
 export const disableAllUsersEmailSettings = (userId: string) => {
   return dbUtil.tryCallAsync(
     'disableAllUsersEmailSettings',
+    { userId },
     () => {
       return dbUtil.updateMany(
         db,

@@ -16,6 +16,7 @@ const dbUtil = require('shared/dbUtil');
 export const getCommunitiesWithMinimumMembers = (min: number = 2): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getCommunitiesWithMinimumMembers",
+    { min },
     () => {
       return db
         .collection('communities')
@@ -52,6 +53,7 @@ export const getCommunitiesWithActiveThreadsInTimeframe = async (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getCommunitiesWithActiveThreadsInTimeframe',
+    { timeframe },
     async () => {
       const range = getRangeFromTimeframe(timeframe);
       let ret = await db

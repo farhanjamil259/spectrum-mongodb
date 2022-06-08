@@ -12,6 +12,7 @@ const dbUtil = require('shared/dbUtil');
 export const getChannelById = (id: string): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     'getChannelById',
+    { id },
     () => {
       return db.collection('channels').findOne({ id: id });
     },

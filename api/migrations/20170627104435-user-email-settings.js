@@ -48,7 +48,7 @@ const dbUtil = require('./dbUtil');
 
 // };
 exports.up = function(r, conn) {
-  return Promise.all([Promise.resolve()]);
+  return Promise.all([dbUtil.createCollections('usersSettings')]);
 };
 
 // exports.down = function(r, conn) {

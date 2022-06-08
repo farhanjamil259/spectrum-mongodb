@@ -43,6 +43,7 @@ export const checkForExistingNotification = (
 ): Promise<?DBNotification> => {
   return dbUtil.tryCallAsync(
     'checkForExistingNotification',
+    { event, contextId },
     () => {
       const now = new Date();
       const then = new Date(now.getTime() - TIME_BUFFER);
@@ -88,9 +89,10 @@ export const storeNotification = (
 ): Promise<DBNotification> => {
   return dbUtil.tryCallAsync(
     'storeNotification',
+    { notification },
     () => {
       return dbUtil
-        .insert('notifications', {
+        .insert(db, 'notifications', {
           ...notification,
           createdAt: new Date(),
           modifiedAt: new Date(),
@@ -124,18 +126,23 @@ export const updateNotification = (
 ): Promise<DBNotification> => {
   return dbUtil.tryCallAsync(
     'updateNotification',
+    { notification },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'notifications',
-        { id: notification.id },
-        {
-          $set: dbUtil.flattenSafe({
-            ...notification,
-            modifiedAt: new Date(),
-          }),
-        }
-      );
+      return dbUtil
+        .updateOne(
+          db,
+          'notifications',
+          { id: notification.id },
+          {
+            $set: dbUtil.flattenSafe({
+              ...notification,
+              modifiedAt: new Date(),
+            }),
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -153,6 +160,7 @@ export const updateNotification = (
 export const getNotifications = async (notificationIds: Array<string>) => {
   return dbUtil.tryCallAsync(
     'getNotifications',
+    { notificationIds },
     () => {
       return db.collection('notifications').find({
         id: {
@@ -177,6 +185,7 @@ export const getNotification = (
 ): Promise<DBNotification> => {
   return dbUtil.tryCallAsync(
     'getNotification',
+    { notificationId },
     () => {
       return db.collection('notifications').findOne({ id: notificationId });
     },

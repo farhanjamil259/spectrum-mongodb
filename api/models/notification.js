@@ -53,6 +53,7 @@ export const getNotificationsByUser = async (
 ) => {
   return dbUtil.tryCallAsync(
     'getNotificationsByUser',
+    { userId, input },
     async () => {
       const { first, after } = input;
 
@@ -110,6 +111,7 @@ export const getNotificationsByUser = async (
 export const getUnreadDirectMessageNotifications = (userId: string, input: InputType,): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "getUnreadDirectMessageNotifications",
+    { userId, input },
     async () => {
       const { first, after } = input
 
@@ -156,9 +158,7 @@ export const getUnreadDirectMessageNotifications = (userId: string, input: Input
 //     .zip()
 //     .filter(row => row('context')('type').ne('DIRECT_MESSAGE_THREAD'))
 //     .run();
-const getNewNotificationsChangefeed = () => {
-  console.log('getNewNotificationsChangefeed called');
-};
+const getNewNotificationsChangefeed = () => {};
 
 export const listenToNewNotifications = (cb: Function): Function => {
   return createChangefeed(
@@ -182,9 +182,7 @@ export const listenToNewNotifications = (cb: Function): Function => {
 //     .zip()
 //     .filter(row => row('context')('type').eq('DIRECT_MESSAGE_THREAD'))
 //     .run();
-const getNewDirectMessageNotificationsChangefeed = () => {
-  console.log('getNewDirectMessageNotificationsChangefeed called');
-};
+const getNewDirectMessageNotificationsChangefeed = () => {};
 
 export const listenToNewDirectMessageNotifications = (cb: Function) => {
   return createChangefeed(

@@ -26,4 +26,7 @@ class Search extends React.Component<Props> {
   }
 }
 
-export default compose(searchCommunityMembers, viewNetworkHandler)(Search);
+export default compose(
+  searchCommunityMembers,
+  viewNetworkHandler
+)(Search);

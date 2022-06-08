@@ -77,4 +77,7 @@ class CommunityAnalytics extends React.Component<Props, State> {
   }
 }
 
-export default compose(withCurrentUser, connect())(CommunityAnalytics);
+export default compose(
+  withCurrentUser,
+  connect()
+)(CommunityAnalytics);

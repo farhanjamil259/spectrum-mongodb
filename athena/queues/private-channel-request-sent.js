@@ -23,7 +23,9 @@ import type { Job, PrivateChannelRequestJobData } from 'shared/bull/types';
 export default async (job: Job<PrivateChannelRequestJobData>) => {
   const { userId, channel } = job.data;
   debug(
-    `new request to join a private channel from user ${userId} in channel ${channel.id}`
+    `new request to join a private channel from user ${userId} in channel ${
+      channel.id
+    }`
   );
 
   const [actor, context, entity] = await Promise.all([

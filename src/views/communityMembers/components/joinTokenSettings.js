@@ -40,10 +40,7 @@ class JoinTokenSettings extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      data: { community },
-      isLoading,
-    } = this.props;
+    const { data: { community }, isLoading } = this.props;
 
     if (community) {
       const { joinSettings } = community;
@@ -61,7 +58,9 @@ class JoinTokenSettings extends React.Component<Props, State> {
           {joinSettings.tokenJoinEnabled && (
             <Clipboard
               style={{ background: 'none' }}
-              data-clipboard-text={`${CLIENT_URL}/${community.slug}/join/${joinSettings.token}`}
+              data-clipboard-text={`${CLIENT_URL}/${community.slug}/join/${
+                joinSettings.token
+              }`}
               onSuccess={() =>
                 this.props.dispatch(
                   addToastWithTimeout('success', 'Copied to clipboard')
@@ -70,7 +69,9 @@ class JoinTokenSettings extends React.Component<Props, State> {
             >
               <TokenInputWrapper>
                 <Input
-                  value={`${CLIENT_URL}/${community.slug}/join/${joinSettings.token}`}
+                  value={`${CLIENT_URL}/${community.slug}/join/${
+                    joinSettings.token
+                  }`}
                   onChange={() => {}}
                   dataCy={'join-link-input'}
                 />
@@ -97,8 +98,6 @@ class JoinTokenSettings extends React.Component<Props, State> {
   }
 }
 
-export default compose(
-  getCommunitySettings,
-  viewNetworkHandler,
-  connect()
-)(JoinTokenSettings);
+export default compose(getCommunitySettings, viewNetworkHandler, connect())(
+  JoinTokenSettings
+);

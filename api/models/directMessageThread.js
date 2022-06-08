@@ -23,11 +23,15 @@ export type DBDirectMessageThread = {
 const getDirectMessageThread = (directMessageThreadId: string): Promise<DBDirectMessageThread> => {
   return dbUtil.tryCallAsync(
     "getDirectMessageThread",
+    { directMessageThreadId },
     () => {
       return db
         .collection('directMessageThreads')
         .findOne({ id: directMessageThreadId })
-        .then(res => res && !res.deletedAt ? res : null);
+        .then(res => { 
+          console.log("getDirectMessageThread res", res); 
+          return res && !res.deletedAt ? res : null 
+        });
     },
     null
   )
@@ -44,6 +48,7 @@ const getDirectMessageThread = (directMessageThreadId: string): Promise<DBDirect
 const getDirectMessageThreads = (ids: Array<string>): Promise<Array<DBDirectMessageThread>> => {
   return dbUtil.tryCallAsync(
     "getDirectMessageThreads",
+    { ids },
     () => {
       return db
         .collection('directMessageThreads')
@@ -80,6 +85,7 @@ const getDirectMessageThreadsByUser = (
 ): Promise<Array<DBDirectMessageThread>> => {
   return dbUtil.tryCallAsync(
     'getDirectMessageThreadsByUser',
+    { userId, first, after },
     async () => {
       let ret = await db
         .collection('usersDirectMessageThreads')
@@ -187,10 +193,15 @@ const setDirectMessageThreadLastActive = (id: string): DBDirectMessageThread => 
 //     })
 //     .filter(NEW_DOCUMENTS.or(THREAD_LAST_ACTIVE_CHANGED))('new_val')
 //     .run();
-const getUpdatedDirectMessageThreadChangefeed = () => {
-  console.log('getUpdatedDirectMessageThreadChangefeed called');
-};
+const getUpdatedDirectMessageThreadChangefeed = () => {};
 
+// const listenToUpdatedDirectMessageThreadRecords = (cb: Function) => {
+//   return createChangefeed(
+//     getUpdatedDirectMessageThreadChangefeed,
+//     cb,
+//     'listenToUpdatedDirectMessageThreads'
+//   );
+// };
 const listenToUpdatedDirectMessageThreadRecords = (cb: Function) => {
   return createChangefeed(
     getUpdatedDirectMessageThreadChangefeed,
@@ -199,23 +210,24 @@ const listenToUpdatedDirectMessageThreadRecords = (cb: Function) => {
   );
 };
 
-const listenToUpdatedDirectMessageThreads = (cb: Function): Function => {
-  // NOTE(@mxstbr): Running changefeeds on eqJoin's does not work well, so we
-  // hack around that by listening to record changes and then "faking" an eqJoin
-  // by doing another db query!
-  return listenToUpdatedDirectMessageThreadRecords(directMessageThread => {
-    getDirectMessageThreadRecords(directMessageThread.id).then(
-      usersDirectMessageThread => {
-        usersDirectMessageThread.forEach(userDirectMessageThread => {
-          cb({
-            ...userDirectMessageThread,
-            ...directMessageThread,
-          });
-        });
-      }
-    );
-  });
-};
+// const listenToUpdatedDirectMessageThreads = (cb: Function): Function => {
+//   // NOTE(@mxstbr): Running changefeeds on eqJoin's does not work well, so we
+//   // hack around that by listening to record changes and then "faking" an eqJoin
+//   // by doing another db query!
+//   return listenToUpdatedDirectMessageThreadRecords(directMessageThread => {
+//     getDirectMessageThreadRecords(directMessageThread.id).then(
+//       usersDirectMessageThread => {
+//         usersDirectMessageThread.forEach(userDirectMessageThread => {
+//           cb({
+//             ...userDirectMessageThread,
+//             ...directMessageThread,
+//           });
+//         });
+//       }
+//     );
+//   });
+// };
+const listenToUpdatedDirectMessageThreads = (cb: Function): Function => {};
 
 // prettier-ignore
 // const checkForExistingDMThread = async (participants: Array<string>): Promise<?string> => {

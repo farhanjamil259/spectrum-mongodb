@@ -15,6 +15,7 @@ const dbUtil = require('shared/dbUtil');
 export const getUsersChannelsEligibleForWeeklyDigest = (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUsersChannelsEligibleForWeeklyDigest",
+    { userId },
     () => {
       return db
         .collection('usersChannels')

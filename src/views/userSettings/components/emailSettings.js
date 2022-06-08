@@ -117,9 +117,9 @@ class EmailSettings extends React.Component<Props> {
       user,
     } = this.props;
 
-    const settings = parseNotificationTypes(
-      notifications
-    ).filter(notification => notification.hasOwnProperty('emailValue'));
+    const settings = parseNotificationTypes(notifications).filter(
+      notification => notification.hasOwnProperty('emailValue')
+    );
 
     if (!user.email) {
       return (

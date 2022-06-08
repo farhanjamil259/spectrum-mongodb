@@ -8,7 +8,14 @@ import dbUtil from 'shared/dbUtil';
 //   tags: (community: ?DBCommunity) => (community ? [community.id] : []),
 // }));
 export const getCommunityById = createReadQuery((id: string) => ({
-  query: db.collection('communities').findOne({ id: id }),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getCommunityById',
+    { id },
+    () => {
+      return db.collection('communities').findOne({ id: id });
+    },
+    null
+  ),
   tags: (community: ?DBCommunity) => (community ? [community.id] : []),
 }));
 
@@ -18,10 +25,17 @@ export const getCommunityById = createReadQuery((id: string) => ({
 //     communities ? communities.map(({ id }) => id) : [],
 // }));
 export const getCommunitiesById = createReadQuery((ids: Array<string>) => ({
-  query: db
-    .collection('communities')
-    .find({ id: { $in: ids } })
-    .toArray(),
+  query: dbUtil.tryCallAsync(
+    '[Shared] getCommunitiesById',
+    { ids },
+    () => {
+      return db
+        .collection('communities')
+        .find({ id: { $in: ids } })
+        .toArray();
+    },
+    []
+  ),
   tags: (communities: ?Array<DBCommunity>) =>
     communities ? communities.map(({ id }) => id) : [],
 }));
@@ -39,12 +53,19 @@ export const getCommunitiesById = createReadQuery((ids: Array<string>) => ({
 // );
 export const getTopCommunitiesByMemberCount = createReadQuery(
   (amount: number) => ({
-    query: db
-      .collection('communities')
-      .find({ deletedAt: null })
-      .sort({ memberCount: -1 })
-      .limit(amount)
-      .toArray(),
+    query: dbUtil.tryCallAsync(
+      '[Shared] getTopCommunitiesByMemberCount',
+      { amount },
+      () => {
+        return db
+          .collection('communities')
+          .find({ deletedAt: null })
+          .sort({ memberCount: -1 })
+          .limit(amount)
+          .toArray();
+      },
+      []
+    ),
     tags: (communities: Array<DBCommunity>) =>
       communities ? communities.map(({ id }) => id) : [],
   })

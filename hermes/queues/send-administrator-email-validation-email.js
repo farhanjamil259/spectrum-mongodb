@@ -28,7 +28,9 @@ export default async (
     return Promise.resolve();
   }
 
-  const subject = `Confirm new administrator email for the ${community.name} community`;
+  const subject = `Confirm new administrator email for the ${
+    community.name
+  } community`;
   const preheader = 'Confirm the new administrator email below';
 
   const validateToken = await generateEmailValidationToken(

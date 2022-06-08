@@ -8,7 +8,10 @@ import ThreadFeed from 'src/components/threadFeed';
 import SearchInput from './searchInput';
 import { setTitlebarProps } from 'src/actions/titlebar';
 
-const SearchThreadFeed = compose(connect(), searchThreadsQuery)(ThreadFeed);
+const SearchThreadFeed = compose(
+  connect(),
+  searchThreadsQuery
+)(ThreadFeed);
 
 type Props = {
   dispatch: Function,

@@ -11,6 +11,7 @@ const dbUtil = require('shared/dbUtil');
 export const getMessage = (id: string): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'getMessage',
+    { id },
     () => {
       return db
         .collection('messages')
@@ -34,6 +35,7 @@ export const getMessagesByThreadId = (
 ): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     'getMessagesByThreadId',
+    { threadId },
     () => {
       return db
         .collection('messages')

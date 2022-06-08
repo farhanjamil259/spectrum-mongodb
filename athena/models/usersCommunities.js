@@ -16,6 +16,7 @@ export const getMembersInCommunity = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getMembersInCommunity',
+    { communityId },
     () => {
       return db
         .collection('usersCommunities')
@@ -46,6 +47,7 @@ export const getOwnersInCommunity = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getOwnersInCommunity',
+    { communityId },
     () => {
       return db
         .collection('usersCommunities')
@@ -74,6 +76,7 @@ export const getModeratorsInCommunity = (
 ): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     'getModeratorsInCommunity',
+    { communityId },
     () => {
       return db
         .collection('usersCommunities')
@@ -118,6 +121,7 @@ export const getUserPermissionsInCommunity = (
 ): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'getUserPermissionsInCommunity',
+    { communityId, userId },
     () => {
       return db
         .colllection('usersCommunities')

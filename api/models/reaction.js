@@ -27,6 +27,7 @@ export type ReactionInput = {
 export const getReactions = (messageIds: Array<string>): Promise<Array<DBReaction>> => {
   return dbUtil.tryCallAsync(
     "getReactions",
+    { messageIds },
     async () => {
       const distinctMessageIds = messageIds.filter((x, i, a) => a.indexOf(x) == i);
       let ret = await db
@@ -49,6 +50,7 @@ export const getReactions = (messageIds: Array<string>): Promise<Array<DBReactio
 export const getReaction = (reactionId: string): Promise<DBReaction> => {
   return dbUtil.tryCallAsync(
     'getReaction',
+    { reactionId },
     () => {
       return db.collection('reactions').findOne({ id: reactionId });
     },
@@ -66,6 +68,7 @@ export const getReaction = (reactionId: string): Promise<DBReaction> => {
 export const getReactionsByIds = (reactionIds: Array<string>): Promise<Array<DBReaction>> => {
   return dbUtil.tryCallAsync(
     "getReactionsByIds", 
+    { reactionIds },
     () => {
       return db
         .collection('reactions')
@@ -157,6 +160,7 @@ export const getReactionsByIds = (reactionIds: Array<string>): Promise<Array<DBR
 export const toggleReaction = (reaction: ReactionInput, userId: string): Promise<DBReaction> => {
   return dbUtil.tryCallAsync(
     "toggleReaction", 
+    { reaction, userId },
     () => {
       return db
       .collection('reactions')

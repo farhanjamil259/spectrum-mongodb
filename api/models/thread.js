@@ -23,6 +23,7 @@ const NOT_WATERCOOLER = thread =>
 export const getThread = (threadId: string): Promise<DBThread> => {
   return dbUtil.tryCallAsync(
     'getThread',
+    { threadId },
     () => {
       return db.collection('threads').findOne({ id: threadId });
     },
@@ -41,6 +42,7 @@ export const getThread = (threadId: string): Promise<DBThread> => {
 export const getThreads = (threadIds: Array<string>): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     "getThreads",
+    { threadIds },
     () => {
       return db
         .collection('threads')
@@ -65,6 +67,7 @@ export const getThreads = (threadIds: Array<string>): Promise<Array<DBThread>> =
 export const getThreadById = (threadId: string): Promise<?DBThread> => {
   return dbUtil.tryCallAsync(
     'getThreadById',
+    { threadId },
     () => {
       return db
         .collection('threads')
@@ -90,6 +93,7 @@ export const getThreadById = (threadId: string): Promise<?DBThread> => {
 export const getThreadsByChannelToDelete = (channelId: string) => {
   return dbUtil.tryCallAsync(
     'getThreadsByChannelToDelete',
+    { channelId },
     () => {
       return db
         .collection('threads')
@@ -123,6 +127,7 @@ export const getThreadsByChannelToDelete = (channelId: string) => {
 export const getThreadsByChannel = (channelId: string, options: PaginationOptions): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     "getThreadsByChannel",
+    { channelId, options },
     () => {
       const { first, after } = options
 
@@ -175,18 +180,22 @@ export const getThreadsByChannels = async (
 ): Promise<Array<DBThread>> => {
   const { first, after, sort = 'latest' } = options;
 
-  let order = [db.desc('lastActive'), db.desc('createdAt')];
+  let order = { lastActive: -1, createdAt: -1 };
   // If we want the top threads, first sort by the score and then lastActive
-  if (sort === 'trending') order.unshift(db.desc('score'));
+  if (sort === 'trending') order = { score: -1, lastActive: -1, createdAt: -1 };
 
   return dbUtil.tryCallAsync(
     'getThreadsByChannels',
+    { channelIds, options },
     () => {
       return db
         .collection('threads')
         .find({
-          channelId: { $in: channelIds, deletedAt: null, watercooler: null },
+          channelId: { $in: channelIds },
+          deletedAt: null,
+          watercooler: null,
         })
+        .sort(order)
         .skip(after || 0)
         .limit(first || 999999)
         .toArray();
@@ -211,6 +220,7 @@ export const getThreadsByChannels = async (
 export const getThreadsByCommunity = async (communityId: string): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     "getThreadsByCommunity",
+    { communityId },
     () => {
       db
         .collection('threads')
@@ -242,6 +252,7 @@ export const getThreadsByCommunity = async (communityId: string): Promise<Array<
 export const getThreadsByCommunityInTimeframe = (communityId: string, range: Timeframe): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "getThreadsByCommunityInTimeframe",
+    { communityId, range },
     () => {
       const { current } = parseRange(range);
       return db
@@ -269,6 +280,7 @@ export const getThreadsByCommunityInTimeframe = (communityId: string, range: Tim
 export const getThreadsInTimeframe = (range: Timeframe): Promise<Array<Object>> => {
   return dbUtil.tryCallAsync(
     "getThreadsInTimeframe",
+    { range },
     () => {
       const { current } = parseRange(range);
       return db
@@ -295,7 +307,8 @@ export const getThreadsInTimeframe = (range: Timeframe): Promise<Array<Object>> 
 // };
 export const getThreadsByUserAsSpamCheck = (userId: string, timeframe: number = 60 * 10): Promise<Array<?DBThread>> => {
   return dbUtil.tryCallAsync(
-    "",
+    "[API] [thread] getThreadsByUserAsSpamCheck",
+    { userId, timeframe },
     () => {
       return db
       .collection('threads')
@@ -419,6 +432,7 @@ export const getViewableThreadsByUser = async (
 ): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     'getViewableThreadsByUser',
+    { evalUser, currentUser, options },
     async () => {
       const { first, after } = options;
       // get a list of the channelIds the current user is allowed to see threads
@@ -528,6 +542,7 @@ export const getViewableThreadsByUser = async (
 export const getPublicThreadsByUser = async (evalUser: string, options: PaginationOptions): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     "getPublicThreadsByUser",
+    { evalUser, options },
     async () => {
       const { first, after } = options
     
@@ -673,6 +688,7 @@ export const getViewableParticipantThreadsByUser = async (
 ): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     'getViewableParticipantThreadsByUser',
+    { evalUser, currentUser, options },
     async () => {
       const { first, after } = options;
       // get a list of the channelIds the current user is allowed to see threads for
@@ -838,6 +854,7 @@ export const getViewableParticipantThreadsByUser = async (
 export const getPublicParticipantThreadsByUser = async (evalUser: string, options: PaginationOptions): Promise<Array<DBThread>> => {
   return dbUtil.tryCallAsync(
     "getPublicParticipantThreadsByUser",
+    { evalUser, options },
     async () => {
       const { first, after } = options
         let ret = await  db
@@ -901,6 +918,7 @@ export const getWatercoolerThread = (
 ): Promise<?DBThread> => {
   return dbUtil.tryCallAsync(
     'getWatercoolerThread',
+    { communityId },
     () => {
       return db
         .collection('threads')
@@ -959,19 +977,24 @@ export const publishThread = (
 ): Promise<DBThread> => {
   return dbUtil.tryCallAsync(
     'publishThread',
+    { filesToUpload, thread },
     () => {
       return dbUtil
-        .insert('threads', {
-          creatorId: userId,
-          createdAt: new Date(),
-          lastActive: new Date(),
-          modifiedAt: null,
-          isPublished: true,
-          isLocked: false,
-          edits: [],
-          reactionCount: 0,
-          messageCount: 0,
-        })
+        .insert(
+          db,
+          'threads',
+          Object.assign({}, thread, {
+            creatorId: userId,
+            createdAt: new Date(),
+            lastActive: new Date(),
+            modifiedAt: null,
+            isPublished: true,
+            isLocked: false,
+            edits: [],
+            reactionCount: 0,
+            messageCount: 0,
+          })
+        )
         .then(result => {
           const thread = result[0];
 
@@ -1014,6 +1037,7 @@ export const publishThread = (
 export const setThreadLock = (threadId: string, value: boolean, userId: string, byModerator: boolean = false): Promise<DBThread> => {
   return dbUtil.tryCallAsync(
     "setThreadLock",
+    { threadId, value, userId, byModerator },
     () => {
       return (
         dbUtil
@@ -1047,6 +1071,7 @@ export const setThreadLock = (threadId: string, value: boolean, userId: string, 
 export const setThreadLastActive = (threadId: string, value: Date) => {
   return dbUtil.tryCallAsync(
     'setThreadLastActive',
+    { threadId, value },
     () => {
       return dbUtil.updateOne(
         db,
@@ -1105,6 +1130,7 @@ export const setThreadLastActive = (threadId: string, value: Date) => {
 export const deleteThread = async (threadId: string, userId: string): Promise<Boolean> => {
   return dbUtil.tryCallAsync(
     "deleteThread",
+    { threadId, userId },
     () => {
       return dbUtil
         .updateOne(
@@ -1199,14 +1225,15 @@ export type EditThreadInput = {
 export const editThread = async (input: EditThreadInput, userId: string, shouldUpdate: boolean = true): Promise<DBThread> => {
   return dbUtil.tryCallAsync(
     "editThread",
+    { input, userId, shouldUpdate },
     async () => {
-      const oldThread = await dbUtil
+      const oldThread = await db
         .collection("threads")
         .findOne({ 
           id: input.threadId 
         });
       oldThread.edits = oldThread.edits || [];
-      oldThread.push({
+      oldThread.edits.push({
         content: oldThread.content,
         timestamp: new Date(),
         editedBy: oldThread.editedBy || oldThread.creatorId
@@ -1214,6 +1241,7 @@ export const editThread = async (input: EditThreadInput, userId: string, shouldU
 
       return dbUtil
         .updateOne(
+          db,
           'threads',
           { 
             id: input.threadId 
@@ -1228,7 +1256,7 @@ export const editThread = async (input: EditThreadInput, userId: string, shouldU
           }
         )
         .then(result => {
-          const thread = result
+          const thread = result[0];
 
           searchQueue.add({
             id: thread.id,
@@ -1273,21 +1301,26 @@ export const editThread = async (input: EditThreadInput, userId: string, shouldU
 export const updateThreadWithImages = async (id: string, body: string) => {
   return dbUtil.tryCallAsync(
     'updateThreadWithImages',
+    { id, body },
     () => {
-      return dbUtil.updateOne(
-        db,
-        'threads',
-        {
-          id: id,
-        },
-        {
-          $set: dbUtil.flattenSafe({
-            content: {
-              body,
-            },
-          }),
-        }
-      );
+      return dbUtil
+        .updateOne(
+          db,
+          'threads',
+          {
+            id: id,
+          },
+          {
+            $set: dbUtil.flattenSafe({
+              content: {
+                body,
+              },
+            }),
+          }
+        )
+        .then(result => {
+          return result[0];
+        });
     },
     null
   );
@@ -1323,6 +1356,7 @@ export const updateThreadWithImages = async (id: string, body: string) => {
 export const moveThread = async (id: string, channelId: string) => {
   return dbUtil.tryCallAsync(
     'moveThread',
+    { id, channelId },
     () => {
       return dbUtil
         .updateOne(
@@ -1367,6 +1401,7 @@ export const moveThread = async (id: string, channelId: string) => {
 export const incrementMessageCount = (threadId: string) => {
   return dbUtil.tryCallAsync(
     'incrementMessageCount',
+    { threadId },
     () => {
       return dbUtil.updateOne(
         db,
@@ -1396,8 +1431,9 @@ export const incrementMessageCount = (threadId: string) => {
 //     .run();
 // };
 export const decrementMessageCount = (threadId: string) => {
-  dbUtil.tryCallAsync(
+  return dbUtil.tryCallAsync(
     'decrementMessageCount',
+    { threadId },
     () => {
       return db.collection('threads').updateOne(
         {
@@ -1429,6 +1465,7 @@ export const decrementMessageCount = (threadId: string) => {
 export const incrementReactionCount = (threadId: string) => {
   return dbUtil.tryCallAsync(
     'incrementReactionCount',
+    { threadId },
     () => {
       return db.collection('threads').updateOne(
         { id: threadId },
@@ -1458,6 +1495,7 @@ export const incrementReactionCount = (threadId: string) => {
 export const decrementReactionCount = (threadId: string) => {
   return dbUtil.tryCallAsync(
     'decrementReactionCount',
+    { threadId },
     () => {
       return dbUtil.updateOne(
         db,
@@ -1501,9 +1539,7 @@ export const decrementReactionCount = (threadId: string) => {
 //       )
 //     )('new_val')
 //     .run();
-const getUpdatedThreadsChangefeed = () => {
-  console.log('getUpdatedThreadsChangefeed called');
-};
+const getUpdatedThreadsChangefeed = () => {};
 
 export const listenToUpdatedThreads = (cb: Function): Function => {
   return createChangefeed(

@@ -5,6 +5,7 @@ import type { DBThread } from 'shared/types';
 export default async (root: DBThread, _: any, ctx: GraphQLContext) => {
   const { channelId, id } = root;
   const { loaders } = ctx;
+  console.log('queries/thread/channel root: DBThread -- Value:', root);
   const channel = await loaders.channel.load(channelId);
   if (!channel) {
     console.error(

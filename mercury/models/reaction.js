@@ -15,6 +15,7 @@ export const getAllReactionsInThread = (
 ): Promise<Array<Object>> => {
   dbUtil.tryCallAsync(
     'getAllReactionsInThread',
+    { messageIds },
     () => {
       return db
         .collection('reactions')

@@ -16,6 +16,7 @@ export const getDirectMessageThreadById = (
 ): Promise<DBDirectMessageThread> => {
   return dbUtil.tryCallAsync(
     'getDirectMessageThreadById',
+    { id },
     () => {
       return db.collection('directMessageThreads').findOne({ id: id });
     },

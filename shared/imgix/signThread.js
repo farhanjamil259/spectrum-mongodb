@@ -56,6 +56,7 @@ const signBody = (body?: string, expires?: number): string => {
 };
 
 export const signThread = (thread: DBThread, expires?: number): DBThread => {
+  console.log('[shared/imgix/signThread] thread:', thread);
   const { content, ...rest } = thread;
 
   return {

@@ -32,10 +32,13 @@ const CommunitySelector = (props: Props) => {
     just return the AvailableCommunitiesDropdown which will do a followup
     fetch of all the current user's communities
   */
-  useEffect(() => {
-    // remove any parent selected community id
-    if (error) onCommunityChange('');
-  }, [error]);
+  useEffect(
+    () => {
+      // remove any parent selected community id
+      if (error) onCommunityChange('');
+    },
+    [error]
+  );
 
   if (error) {
     return <AvailableCommunitiesDropdown onChange={onChange} />;

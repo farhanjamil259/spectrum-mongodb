@@ -135,4 +135,7 @@ class NotificationSettings extends React.Component<Props, State> {
   }
 }
 
-export default compose(subscribeToWebPush, connect())(NotificationSettings);
+export default compose(
+  subscribeToWebPush,
+  connect()
+)(NotificationSettings);

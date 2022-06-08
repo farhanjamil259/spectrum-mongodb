@@ -33,6 +33,7 @@ export const updateReputation = async (
 ): Promise<Object> => {
   return dbUtil.tryCallAsync(
     'updateReputation',
+    { userId, communityId, score, type },
     () => {
       return dbUtil
         .updateMany(

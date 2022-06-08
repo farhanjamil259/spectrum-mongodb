@@ -24,11 +24,19 @@ const createCollections = (db, ...collectionNames) => {
   }
   return Promise.all(
     collectionNames.map(collectionName => {
-      return db.createCollection(collectionName).catch(error => {
-        throw new Error(
-          `Failed to create collection '${collectionName}', because: ${error.message}`
-        );
-      });
+      return db
+        .createCollection(collectionName)
+        .then(() => {
+          return true;
+        })
+        .catch(error => {
+          console.log(
+            `Failed to create collection '${collectionName}', because: ${
+              error.message
+            }`
+          );
+          return false;
+        });
     })
   );
 };
@@ -42,10 +50,16 @@ const dropCollections = (...collectionNames) => {
       return db
         .collection(collectionName)
         .drop()
+        .then(() => {
+          return true;
+        })
         .catch(error => {
-          throw new Error(
-            `Failed to drop collection '${collectionName}', because: ${error.message}`
+          console.log(
+            `Failed to drop collection '${collectionName}', because: ${
+              error.message
+            }`
           );
+          return false;
         });
     })
   );

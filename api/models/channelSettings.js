@@ -43,6 +43,7 @@ const defaultSettings = {
 export const getOrCreateChannelSettings = (channelId: string): Promise<DBChannelSettings> => {
   return dbUtil.tryCallAsync(
     'getOrCreateChannelSettings', 
+    { channelId },
     async () => {
       const settings = await db
         .collection("channelSettings")
@@ -96,6 +97,7 @@ export const getOrCreateChannelSettings = (channelId: string): Promise<DBChannel
 export const getChannelsSettings = (channelIds: Array<string>): any => {
   return dbUtil.tryCallAsync(
     "getChannelsSettings",
+    { channelIds },
     () => {
       return db
         .collection("channelSettings")
@@ -142,6 +144,7 @@ export const getChannelsSettings = (channelIds: Array<string>): any => {
 export const enableChannelTokenJoin = (channelId: string) => {
   return dbUtil.tryCallAsync(
     'enableChannelTokenJoin',
+    { channelId },
     () => {
       return dbUtil
         .updateMany(
@@ -185,6 +188,7 @@ export const enableChannelTokenJoin = (channelId: string) => {
 export const disableChannelTokenJoin = (channelId: string) => {
   return dbUtil.tryCallAsync(
     'disableChannelTokenJoin',
+    { channelId },
     () => {
       return dbUtil
         .updateMany(
@@ -227,6 +231,7 @@ export const disableChannelTokenJoin = (channelId: string) => {
 export const resetChannelJoinToken = (channelId: string) => {
   return dbUtil.tryCallAsync(
     'resetChannelJoinToken',
+    { channelId },
     () => {
       return dbUtil
         .updateMany(
@@ -297,6 +302,7 @@ type UpdateInput = {
 export const updateChannelSlackBotLinks = ({ channelId, slackChannelId, eventType }: UpdateInput): Promise<DBChannel> => {
   return dbUtil.tryCallAsync(
     "updateChannelSlackBotLinks",
+    { channelId, slackChannelId, eventType },
     async () => {
       const settings: DBChannelSettings = await getOrCreateChannelSettings(
         channelId

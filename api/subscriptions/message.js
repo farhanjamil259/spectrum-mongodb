@@ -25,6 +25,8 @@ module.exports = {
         { thread }: { thread: string },
         { user }: GraphQLContext
       ) => {
+        console.log('[subscriptions/message] subscribe:', thread, user);
+
         // Make sure the user has the permission to view the thread before
         // subscribing them to changes
         const [threadData, dmThreadData] = await Promise.all([

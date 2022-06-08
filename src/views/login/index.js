@@ -100,4 +100,7 @@ class Login extends React.Component<Props> {
   }
 }
 
-export default compose(withRouter, connect())(Login);
+export default compose(
+  withRouter,
+  connect()
+)(Login);

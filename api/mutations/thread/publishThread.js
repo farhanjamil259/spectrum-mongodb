@@ -250,6 +250,7 @@ export default requireAuth(
 
     // create a relationship between the thread and the author and set community lastActive
     const timestamp = new Date(dbThread.createdAt).getTime();
+    console.log('dbThread', dbThread);
     await Promise.all([
       createParticipantInThread(dbThread.id, user.id),
       setCommunityLastActive(dbThread.communityId, new Date(timestamp)),

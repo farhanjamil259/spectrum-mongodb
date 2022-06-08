@@ -21,7 +21,9 @@ export default (job: Job<AdminUserSpammingThreadsJobData>): Promise<void> => {
   const subject = `🐟 User spamming threads alert: ${user.name} has published ${
     threads.length === 1 ? 'one thread' : `${threads.length} threads`
   } in previous 10 minutes`;
-  const preheader = `${user.name} is attempting to publish a new thread in the ${community.name} community`;
+  const preheader = `${
+    user.name
+  } is attempting to publish a new thread in the ${community.name} community`;
 
   const cleanThread = (thread: any) =>
     Object.assign({}, thread, {

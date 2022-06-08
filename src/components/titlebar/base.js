@@ -115,4 +115,7 @@ const mapStateToProps = (state): * => ({
     0,
 });
 
-export default compose(withRouter, connect(mapStateToProps))(MobileTitlebar);
+export default compose(
+  withRouter,
+  connect(mapStateToProps)
+)(MobileTitlebar);

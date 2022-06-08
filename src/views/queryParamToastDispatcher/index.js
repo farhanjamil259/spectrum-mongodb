@@ -87,4 +87,7 @@ class QueryParamToastDispatcher extends React.Component<Props> {
   }
 }
 
-export default compose(withRouter, connect())(QueryParamToastDispatcher);
+export default compose(
+  withRouter,
+  connect()
+)(QueryParamToastDispatcher);

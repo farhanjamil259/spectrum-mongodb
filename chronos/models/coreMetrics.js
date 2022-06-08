@@ -31,7 +31,7 @@ export const saveCoreMetrics = (data: DBCoreMetric): Promise<DBCoreMetric> => {
     'saveCoreMetrics',
     () => {
       return dbUtil
-        .insert('coreMetrics', {
+        .insert(db, 'coreMetrics', {
           date: new Date(),
           ...data,
         })
@@ -63,6 +63,7 @@ export const getActiveUsersInTimeframe = (
 ): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getActiveUsersInTimeframe',
+    { timeframe },
     () => {
       const range = getRangeFromTimeframe(timeframe);
       return db.collection('users').countDocuments({
@@ -124,6 +125,7 @@ export const getTableRecordCount = (
 ): Promise<number> => {
   return dbUtil.tryCallAsync(
     'getTableRecordCount',
+    { table, filter },
     () => {
       if (filter) {
         return db.collection(table).countDocuments({ deletedAt: null });
@@ -148,6 +150,7 @@ export const getTableRecordCount = (
 export const getLastTwoCoreMetrics = (): Promise<Array<DBCoreMetric>> => {
   return dbUtil.tryCallAsync(
     'getLastTwoCoreMetrics',
+    {},
     () => {
       return db
         .collection('coreMetrics')

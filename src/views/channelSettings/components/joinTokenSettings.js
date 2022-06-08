@@ -42,10 +42,7 @@ class LoginTokenSettings extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      data: { channel },
-      isLoading,
-    } = this.props;
+    const { data: { channel }, isLoading } = this.props;
 
     if (channel) {
       const { joinSettings } = channel;
@@ -63,7 +60,9 @@ class LoginTokenSettings extends React.Component<Props, State> {
           {joinSettings.tokenJoinEnabled && (
             <Clipboard
               style={{ background: 'none' }}
-              data-clipboard-text={`${CLIENT_URL}/${channel.community.slug}/${channel.slug}/join/${joinSettings.token}`}
+              data-clipboard-text={`${CLIENT_URL}/${channel.community.slug}/${
+                channel.slug
+              }/join/${joinSettings.token}`}
               onSuccess={() =>
                 this.props.dispatch(
                   addToastWithTimeout('success', 'Copied to clipboard')
@@ -72,7 +71,9 @@ class LoginTokenSettings extends React.Component<Props, State> {
             >
               <TokenInputWrapper>
                 <Input
-                  value={`${CLIENT_URL}/${channel.community.slug}/${channel.slug}/join/${joinSettings.token}`}
+                  value={`${CLIENT_URL}/${channel.community.slug}/${
+                    channel.slug
+                  }/join/${joinSettings.token}`}
                   onChange={() => {}}
                   dataCy={'join-link-input'}
                 />
@@ -97,8 +98,6 @@ class LoginTokenSettings extends React.Component<Props, State> {
   }
 }
 
-export default compose(
-  getChannelSettings,
-  viewNetworkHandler,
-  connect()
-)(LoginTokenSettings);
+export default compose(getChannelSettings, viewNetworkHandler, connect())(
+  LoginTokenSettings
+);

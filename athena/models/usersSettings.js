@@ -16,6 +16,7 @@ const dbUtil = require('shared/dbUtil');
 export const getUsersSettings = (userId: string): Promise<?DBUsersSettings> => {
   return dbUtil.tryCallAsync(
     'getUsersSettings',
+    { userId },
     () => {
       return db
         .collection('usersSettings')

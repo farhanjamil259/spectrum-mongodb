@@ -63,7 +63,12 @@ const plainToDraft = compose(
   stateFromMarkdown
 );
 
-const slateToDraft = compose(plainToDraft, toPlainText, toState, JSON.parse);
+const slateToDraft = compose(
+  plainToDraft,
+  toPlainText,
+  toState,
+  JSON.parse
+);
 
 // exports.up = function(r, conn) {
 //   return (

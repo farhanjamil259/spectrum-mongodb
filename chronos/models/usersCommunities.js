@@ -12,6 +12,7 @@ const dbUtil = require('shared/dbUtil');
 export const getUsersCommunityIds = async (userId: string): Promise<Array<string>> => {
   return dbUtil.tryCallAsync(
     "getUsersCommunityIds",
+    { userId },
     () => {
       return db
         .collection('usersCommunities')

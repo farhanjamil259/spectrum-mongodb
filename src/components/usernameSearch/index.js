@@ -163,4 +163,7 @@ class UsernameSearch extends React.Component<Props, State> {
   }
 }
 
-export default compose(withApollo, connect())(UsernameSearch);
+export default compose(
+  withApollo,
+  connect()
+)(UsernameSearch);
